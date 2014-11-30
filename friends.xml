@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<friends name="Qt">
+	<friend id="1">
+		<username>Administrator</username>
+		<ip>172.16.107.161</ip>
+		<hostname>cym</hostname>
+		<port>45456</port>
+	</friend>
+	<friend id="2">
+		<username>Administrator</username>
+		<ip>172.16.107.10</ip>
+		<hostname>LGY</hostname>
+		<port>45457</port>
+	</friend>
+</friends>

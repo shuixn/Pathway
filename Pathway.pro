@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +17,20 @@ TEMPLATE = app
 SOURCES += main.cpp\
         pathway.cpp \
     tcpserver.cpp \
-    tcpclient.cpp
+    tcpclient.cpp \
+    startchat.cpp \
+    innerchat.cpp \
+    qmenubutton.cpp
 
 HEADERS  += pathway.h \
     tcpserver.h \
-    tcpclient.h
+    tcpclient.h \
+    startchat.h \
+    innerchat.h \
+    qmenubutton.h
 
 FORMS    += pathway.ui \
     tcpserver.ui \
-    tcpclient.ui
+    tcpclient.ui \
+    innerchat.ui
+RESOURCES += application.qrc

@@ -6,47 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>886</width>
-    <height>519</height>
+    <width>178</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>pathway</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(221, 221, 221);</string>
+   <string notr="true">background-color: rgb(255, 255, 255);
+</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTextBrowser" name="textBrowser">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>40</y>
-      <width>551</width>
-      <height>321</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(244, 244, 244);
-border:0px;</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="footGroupBox">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>480</y>
-      <width>891</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(221, 221, 221);</string>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-   </widget>
    <widget class="QGroupBox" name="leftGroupBox">
     <property name="geometry">
      <rect>
@@ -64,6 +35,9 @@ border:0px;</string>
      <string/>
     </property>
     <widget class="QTableWidget" name="peopleTableWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -72,9 +46,21 @@ border:0px;</string>
        <height>191</height>
       </rect>
      </property>
+     <property name="cursor" stdset="0">
+      <cursorShape>OpenHandCursor</cursorShape>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(255, 255, 255);
 border:0px;</string>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <column>
       <property name="text">
@@ -125,35 +111,39 @@ color: rgb(167, 167, 167);</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-   </widget>
-   <widget class="QGroupBox" name="rightGroupBox">
-    <property name="geometry">
-     <rect>
-      <x>730</x>
-      <y>40</y>
-      <width>161</width>
-      <height>441</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(48, 48, 48);</string>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="textEdit">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>360</y>
-      <width>551</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background-color: rgb(254, 254, 254);</string>
-    </property>
+    <widget class="QToolBox" name="friendToolBox">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>161</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Friends&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(77, 77, 77);
+border:0px;</string>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page_recent">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>161</width>
+        <height>145</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>最近</string>
+      </attribute>
+     </widget>
+    </widget>
    </widget>
    <widget class="QLabel" name="logoLabel">
     <property name="geometry">
@@ -174,15 +164,14 @@ color: rgb(167, 167, 167);</string>
    <widget class="QPushButton" name="closePushButton">
     <property name="geometry">
      <rect>
-      <x>850</x>
-      <y>0</y>
-      <width>21</width>
-      <height>23</height>
+      <x>150</x>
+      <y>10</y>
+      <width>20</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
-border-radius:2px;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>X</string>
@@ -191,9 +180,9 @@ border-radius:2px;</string>
    <widget class="Line" name="line_2">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>0</y>
-      <width>20</width>
+      <x>110</x>
+      <y>10</y>
+      <width>16</width>
       <height>21</height>
      </rect>
     </property>
@@ -204,19 +193,47 @@ border-radius:2px;</string>
    <widget class="QPushButton" name="minPushButton">
     <property name="geometry">
      <rect>
-      <x>820</x>
-      <y>0</y>
-      <width>21</width>
-      <height>23</height>
+      <x>130</x>
+      <y>10</y>
+      <width>20</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 255, 255);
-border-radius:2px;</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string>-</string>
     </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>480</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(214, 214, 214);</string>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QPushButton" name="innerPushButton">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>10</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>&gt;</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
