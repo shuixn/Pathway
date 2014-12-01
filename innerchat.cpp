@@ -139,7 +139,7 @@ void InnerChat::processPendingDatagrams()
                 {
                     in >>this->userName >>this->localHostName;
 
-                    emit sendData(this->userName,this->localHostName,"");
+                    emit sendData(this->userName,"",this->localHostName);
                     emit ParticipantLefted();
 
                     break;
@@ -253,7 +253,7 @@ QString InnerChat::getMessage()
 
 void InnerChat::closeEvent(QCloseEvent *)
 {
-     sendMessage(ParticipantLeft);
+
 }
 
 //关闭

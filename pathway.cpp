@@ -4,6 +4,7 @@
 #include "QFileDialog"
 #include "QScrollBar"
 #include <QKeyEvent>
+#include <QTimer>
 
 pathway::pathway(QWidget *parent) :
     QMainWindow(parent),
@@ -145,10 +146,23 @@ void pathway::on_closePushButton_clicked()
       0, 1 ) )
      {
         case 0:
-            innerchat->close();
+        {
+            innerchat->sendMessage(ParticipantLeft);
+
+            /*
+            this->hide();
+
+            QDateTime n2=QDateTime::currentDateTime();
+            QDateTime now;
+            do{
+                now=QDateTime::currentDateTime();
+            } while(n2.secsTo(now)<=6);             //3为需要延时的秒数
+
+            */
+            emit closed();
             break;
-        case 1:
-     default:
+        }
+        case 1:  
             break;
      }
 }
@@ -259,7 +273,7 @@ void pathway::chat()
 
     QString currentFriendName;  // 当前好友名
     QString currentFriendIp;    // 当前好友IP
-    QString currentFriendPort;  // 当前好友端口
+    qint32 currentFriendPort;  // 当前好友端口
 
     //遍历链表
     for(int i = 0; i < friendsList.size(); ++i) {
@@ -267,9 +281,13 @@ void pathway::chat()
         {
             currentFriendName = clickedToolBtn->text();
             currentFriendIp   = friendsList.at(i-1).toUtf8().data();
-            currentFriendPort = friendsList.at(i+1).toUtf8().data();
+            currentFriendPort = (qint32)friendsList.at(i+1).toUtf8().data();
         }
     }
+
+    //新建好友窗口
+    friendchat = new FriendChat(currentFriendName,currentFriendIp,currentFriendPort);
+    friendchat->show();
 
 }
 

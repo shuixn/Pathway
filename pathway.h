@@ -14,6 +14,7 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include "innerchat.h"
+#include "friendchat.h"
 #include <QObject>
 
 namespace Ui {
@@ -30,10 +31,10 @@ public:
     explicit pathway(QWidget *parent = 0);
     ~pathway();
 
-    //保存innerchat类指针
-    InnerChat *innerchat;
+    InnerChat *innerchat;                   //保存innerchat类指针
+    FriendChat *friendchat;                 //保存friendchat类指针
 
-    void XmlOperator(QString fileName);
+    void XmlOperator(QString fileName);     //读取本地好友数据
 
 
 protected:
