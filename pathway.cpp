@@ -41,12 +41,9 @@ pathway::pathway(QWidget *parent) :
                      Qt::WindowMaximizeButtonHint
                     );
 
-    connect(innerchat,SIGNAL(sendUserName(QString)),
-            this,SLOT(getNewUsername(QString)));
-    connect(innerchat,SIGNAL(sendIpaddress(QString)),
-            this,SLOT(getNewIpaddress(QString)));
-    connect(innerchat,SIGNAL(sendLocalHostname(QString)),
-            this,SLOT(getNewLocalHostname(QString)));
+    connect(innerchat,SIGNAL(sendData(QString,QString,QString)),
+            this,SLOT(getData(QString,QString,QString)));
+
     connect(innerchat,SIGNAL(NewParticipanted()),
             this,SLOT(newparticipant()));
     connect(innerchat,SIGNAL(ParticipantLefted()),
@@ -86,23 +83,13 @@ pathway::~pathway()
     delete ui;
 }
 
-//获取用户名
-void pathway::getNewUsername(QString username)
+void pathway::getData(QString username, QString ipaddress, QString localhostname)
 {
     this->newUsername = username;
-}
-
-//获取IP
-void pathway::getNewIpaddress(QString ipaddress)
-{
     this->newIpaddress = ipaddress;
-}
-
-//获取主机名
-void pathway::getNewLocalHostname(QString localhostname)
-{
     this->newLocalhostname = localhostname;
 }
+
 void pathway::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
@@ -117,7 +104,7 @@ void pathway::changeEvent(QEvent *e)
 
 void pathway::closeEvent(QCloseEvent *)
 {
-    //sendMessage(ParticipantLeft);
+
 }
 
 //新用户加入
@@ -135,6 +122,8 @@ void pathway::newparticipant()
         ui->peopleTableWidget->setItem(0,2,host);
 
         ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
+
+        innerchat->sendMessage(NewParticipant);
     }
 }
 
@@ -150,7 +139,18 @@ void pathway::participantleft()
 //关闭
 void pathway::on_closePushButton_clicked()
 {
-    this->close();
+    switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+      tr("Do you really want to log out Pathway?"),
+      tr("Yes"), tr("No"),
+      0, 1 ) )
+     {
+        case 0:
+            innerchat->close();
+            break;
+        case 1:
+     default:
+            break;
+     }
 }
 
 //最小化
@@ -270,8 +270,6 @@ void pathway::chat()
             currentFriendPort = friendsList.at(i+1).toUtf8().data();
         }
     }
-
-
 
 }
 

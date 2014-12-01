@@ -38,7 +38,7 @@ public:
     QString getIP();                                        //获取本地IP
     QString getMessage();                                   //获取要发送的文本信息
 
-
+    void sendMessage(MessageType type,QString serverAddress="");
 
     int port;
 
@@ -49,7 +49,6 @@ protected:
     void mouseReleaseEvent(QMouseEvent* event);
 
     void changeEvent(QEvent *e);
-    void sendMessage(MessageType type,QString serverAddress="");
 
     void closeEvent(QCloseEvent *);
     //事件过滤器
@@ -69,19 +68,16 @@ private:
     bool saveFile(const QString& fileName);
 
 signals:
-
-    void sendUserName(QString username);
-    void sendIpaddress(QString ipadress);
-    void sendLocalHostname(QString localhostname);
+    void sendData(QString username,QString ipadress,QString localhostname);
 
     void NewParticipanted();
     void ParticipantLefted();
 
 private slots:
-    void send();                       //发送
+    void send();                                  //发送
     void processPendingDatagrams();               //接收数据
-    void clear();                      //清除聊天记录
-    void save();                       //保存历史
+    void clear();                                 //清除聊天记录
+    void save();                                  //保存历史
     void on_closePushButton_clicked();            //关闭
     void on_minPushButton_clicked();              //最小化
 

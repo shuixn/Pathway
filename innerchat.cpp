@@ -126,21 +126,20 @@ void InnerChat::processPendingDatagrams()
                 }
             case NewParticipant:
                 {
-                    in >>this->userName>>this->localHostName>>this->ipAddress;
-                    emit sendUserName(this->userName);
-                    emit sendLocalHostname(this->localHostName);
-                    emit sendIpaddress(this->ipAddress);
-                    emit NewParticipanted();
 
-                    sendMessage(NewParticipant);
+                    in >>this->userName>>this->localHostName>>this->ipAddress;
+
+                    emit sendData(this->userName,this->ipAddress,this->localHostName);
+
+                    emit NewParticipanted();
 
                     break;
                 }
             case ParticipantLeft:
                 {
                     in >>this->userName >>this->localHostName;
-                    emit sendUserName(this->userName);
-                    emit sendLocalHostname(this->localHostName);
+
+                    emit sendData(this->userName,this->localHostName,"");
                     emit ParticipantLefted();
 
                     break;
@@ -254,7 +253,7 @@ QString InnerChat::getMessage()
 
 void InnerChat::closeEvent(QCloseEvent *)
 {
-    sendMessage(ParticipantLeft);
+     sendMessage(ParticipantLeft);
 }
 
 //关闭

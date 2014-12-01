@@ -4,6 +4,7 @@
 #include <QtNetwork>
 #include <QMainWindow>
 #include <QMouseEvent>
+#include <QCloseEvent>
 #include <QtXml>
 #include <QDomDocument>
 #include <QFile>
@@ -78,9 +79,11 @@ private slots:
 
     void on_innerPushButton_clicked();
 
-    void getNewUsername(QString username);
-    void getNewIpaddress(QString ipaddress);
-    void getNewLocalHostname(QString localhostname);
+    void getData(QString username,QString ipaddress,QString localhostname);
+
+signals:
+    void closed();
+
 };
 
 #endif // pathway_H
