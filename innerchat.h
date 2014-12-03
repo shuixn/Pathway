@@ -18,7 +18,11 @@ enum MessageType
 {
     Message,                //信息
     NewParticipant,         //新用户
-    ParticipantLeft         //用户离开
+    ParticipantLeft,        //用户离开
+    Fchat,                  //聊天
+    Fadd,                   //添加好友
+    Fagree,                 //同意添加
+    Frefused                //拒绝添加
 };
 
 class InnerChat : public QDialog
@@ -33,12 +37,13 @@ public:
     QString time;
 
     QString userName,localHostName,ipAddress;
+    QString addUser,addHostName,addIp;
 
     QString getUserName();                                  //获取本地用户名
     QString getIP();                                        //获取本地IP
     QString getMessage();                                   //获取要发送的文本信息
 
-    void sendMessage(MessageType type,QString serverAddress="");
+    void sendMessage(MessageType type,QString ipAddress="");
 
     int port;
 

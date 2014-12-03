@@ -15,6 +15,7 @@
 #include <QVBoxLayout>
 #include "innerchat.h"
 #include "friendchat.h"
+#include "friendoperator.h"
 #include <QObject>
 
 namespace Ui {
@@ -33,9 +34,11 @@ public:
 
     InnerChat *innerchat;                   //保存innerchat类指针
     FriendChat *friendchat;                 //保存friendchat类指针
+    FriendOperator *fo;                     //保存查看好友信息类指针
 
     void XmlOperator(QString fileName);     //读取本地好友数据
-
+    void friendEnter();                     //判断新用户是否是好友并操作
+    void friendLeft();                      //好友离开操作
 
 protected:
     //声明移动窗体事件
@@ -73,7 +76,7 @@ private slots:
     void on_peopleTableWidget_doubleClicked(QModelIndex index);     //双击附近的人
     void on_closePushButton_clicked();                              //关闭
     void on_minPushButton_clicked();                                //最小化
-    void chat();
+    void friendInformation();
 
     void newparticipant();
     void participantleft();
@@ -81,6 +84,8 @@ private slots:
     void on_innerPushButton_clicked();
 
     void getData(QString username,QString ipaddress,QString localhostname);
+
+    void reloadXML();
 
 signals:
     void closed();

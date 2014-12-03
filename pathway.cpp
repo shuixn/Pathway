@@ -111,7 +111,9 @@ void pathway::closeEvent(QCloseEvent *)
 //新用户加入
 void pathway::newparticipant()
 {
+    //判断该人是否已存在
     bool bb = ui->peopleTableWidget->findItems(this->newLocalhostname,Qt::MatchExactly).isEmpty();
+    //不存在就添加进“附近的人”
     if(bb)
     {
         QTableWidgetItem *user = new QTableWidgetItem(this->newUsername);
@@ -124,7 +126,59 @@ void pathway::newparticipant()
 
         ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
 
+        //如果是好友就高亮显示
+        friendEnter();
+
+        //发送自己在线
         innerchat->sendMessage(NewParticipant);
+    }
+}
+
+//判断新用户是否是好友并操作
+void pathway::friendEnter()
+{
+    //判断是否存在“我的好友”
+    if(ui->friendToolBox->itemText(1) == "我的好友")
+    {
+        //遍历所有toolbtn
+        QObjectList list = children();
+        QToolButton *tb;
+        foreach (QObject *obj, list) {
+            tb = qobject_cast<QToolButton*>(obj);
+            if(tb->text() == this->newLocalhostname)
+            {
+                //设置高亮
+                tb->setToolButtonStyle(Qt::white);
+                tb->setEnabled(true);
+            }
+            else
+            {
+                tb->setEnabled(false);
+            }
+        }
+    }
+}
+
+//好友离开操作
+void pathway::friendLeft()
+{
+    //判断是否存在“我的好友”
+    if(ui->friendToolBox->itemText(1) == "我的好友")
+    {
+        //遍历所有toolbtn
+        QObjectList list = children();
+        QToolButton *tb;
+        foreach (QObject *obj, list) {
+            tb = qobject_cast<QToolButton*>(obj);
+            if(tb->text() == this->newLocalhostname)
+            {
+                //设置变暗
+                tb->setToolButtonStyle(Qt::black);
+                //设置按钮不可用
+                tb->setEnabled(false);
+
+            }
+        }
     }
 }
 
@@ -135,30 +189,25 @@ void pathway::participantleft()
     ui->peopleTableWidget->removeRow(rowNum);
 
     ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
+
+    //好友离开操作
+    friendLeft();
 }
 
 //关闭
 void pathway::on_closePushButton_clicked()
 {
     switch(QMessageBox::information( this, tr("Pathway温馨提示"),
-      tr("Do you really want to log out Pathway?"),
-      tr("Yes"), tr("No"),
+      tr("确定离开Pathway?"),
+      tr("是"), tr("否"),
       0, 1 ) )
      {
         case 0:
         {
+            //发送离开
             innerchat->sendMessage(ParticipantLeft);
 
-            /*
-            this->hide();
-
-            QDateTime n2=QDateTime::currentDateTime();
-            QDateTime now;
-            do{
-                now=QDateTime::currentDateTime();
-            } while(n2.secsTo(now)<=6);             //3为需要延时的秒数
-
-            */
+            //关闭程序
             emit closed();
             break;
         }
@@ -173,17 +222,33 @@ void pathway::on_minPushButton_clicked()
     pathway::showMinimized();
 }
 
-//查看
+//添加好友
 void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
 {
-    if(ui->peopleTableWidget->item(index.row(),0)->text() == this->newUsername &&
-        ui->peopleTableWidget->item(index.row(),1)->text() == this->newIpaddress)
+    if(ui->peopleTableWidget->item(index.row(),0)->text() == innerchat->getUserName() &&
+        ui->peopleTableWidget->item(index.row(),1)->text() == innerchat->getIP())
     {
-        QMessageBox::warning(0,tr("警告"),tr("你不可以跟自己聊天！！！"),QMessageBox::Ok);
+        //查看本人信息
     }
     else
     {
-        //查看
+        switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+          tr("请求添加该好友?"),
+          tr("是"), tr("否"),
+          0, 1 ) )
+         {
+            case 0:
+            {
+                QString ip = ui->peopleTableWidget->item(index.row(),1)->text();
+
+                //发送添加好友
+                innerchat->sendMessage(Fadd,ip);
+
+                break;
+            }
+            case 1:
+                break;
+         }
     }
 
 }
@@ -255,40 +320,56 @@ void pathway::XmlOperator(QString fileName){
 
         layout->addWidget(toolBtn);
 
-        connect(toolBtn,SIGNAL(clicked()),this,SLOT(chat()));
+        connect(toolBtn,SIGNAL(clicked()),this,SLOT(friendInformation()));
 
      }
      layout->addStretch();
 
      ui->friendToolBox->addItem((QWidget*)groupBox,tr("我的好友"));
 
+     ui->friendToolBox->setCurrentIndex(1);
+
      file.close();
 }
 
 //
-void pathway::chat()
+void pathway::friendInformation()
 {
     //获取当前点击toolbutton的指针
     QToolButton *clickedToolBtn = qobject_cast<QToolButton *>(sender());
 
-    QString currentFriendName;  // 当前好友名
-    QString currentFriendIp;    // 当前好友IP
-    qint32 currentFriendPort;  // 当前好友端口
+    QString currentFriendUsername;      // 当前好友用户名
+    QString currentFriendLocalName;     // 当前好友主机名
+    QString currentFriendIp;            // 当前好友IP
+    qint32 currentFriendPort;           // 当前好友端口
 
     //遍历链表
     for(int i = 0; i < friendsList.size(); ++i) {
         if(clickedToolBtn->text() == friendsList.at(i).toUtf8().data())
         {
-            currentFriendName = clickedToolBtn->text();
+            currentFriendLocalName = clickedToolBtn->text();
+            currentFriendUsername = friendsList.at(i-2).toUtf8().data();
             currentFriendIp   = friendsList.at(i-1).toUtf8().data();
             currentFriendPort = (qint32)friendsList.at(i+1).toUtf8().data();
         }
     }
 
-    //新建好友窗口
-    friendchat = new FriendChat(currentFriendName,currentFriendIp,currentFriendPort);
-    friendchat->show();
+    //查看好友信息
+    fo = new FriendOperator(currentFriendUsername,
+                            currentFriendIp,
+                            currentFriendLocalName,
+                            currentFriendPort);
+    fo->show();
+    connect(fo,SIGNAL(reloadXML()),this,SLOT(reloadXML()));
 
+}
+
+//重新载入XML
+void pathway::reloadXML()
+{
+    //刷新好友列表
+    ui->friendToolBox->removeItem(1);
+    XmlOperator("friends.xml");
 }
 
 void pathway::on_innerPushButton_clicked()

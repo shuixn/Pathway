@@ -144,7 +144,48 @@ void InnerChat::processPendingDatagrams()
 
                     break;
                 }
+            case Fchat:
+                {
+                    //好友请求聊天
+                    in >>this->userName>>this->localHostName>>this->ipAddress;
+                    //新建udp套接字
 
+                }
+            case Fadd://B被添加
+                {
+
+                    in >>this->addUser>>this->addHostName>>this->addIp;
+
+                    switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+                      tr("IP地址为 %1，主机名为 %2。请求添加你为好友！是否添加？")
+                                                     .arg(this->addIp)
+                                                     .arg(this->addHostName),
+                      tr("是"), tr("否"),
+                      0, 1 ) )
+                     {
+                        case 0:
+                        {
+                            //发送同意
+
+                            //激活插入本地XML数据并刷新
+
+                            break;
+                        }
+                        case 1:
+                            //发送拒绝
+                            sendMessage(Frefused);
+                            break;
+                     }
+
+                }
+            case Frefused://A被拒绝
+                {
+                    //提示B拒绝添加
+                }
+            case Fagree://A被同意
+                {
+                    //插入数据到XML并刷新
+                }
         }
     }
 }
@@ -175,7 +216,7 @@ QString InnerChat::getIP()
 }
 
 //发送信息
-void InnerChat::sendMessage(MessageType type, QString serverAddress)
+void InnerChat::sendMessage(MessageType type, QString ipAddress)
 {
     QByteArray data;
     QDataStream out(&data,QIODevice::WriteOnly);
@@ -187,11 +228,13 @@ void InnerChat::sendMessage(MessageType type, QString serverAddress)
     {
         case ParticipantLeft:
             {
+                udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
                 break;
             }
         case NewParticipant:
             {
                 out << address;
+                udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
                 break;
             }
 
@@ -204,12 +247,33 @@ void InnerChat::sendMessage(MessageType type, QString serverAddress)
                 }
                out << address << getMessage();
                ui->textBrowser->verticalScrollBar()->setValue(ui->textBrowser->verticalScrollBar()->maximum());
+
+               udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
                break;
 
             }
+        case Fchat:
+            {
+                break;
+            }
+        case Fadd://A添加B
+            {
+                out << address;
 
+                udpSocket->writeDatagram(data,data.length(),QHostAddress(ipAddress), port);
+                break;
+            }
+        case Fagree://B同意A添加
+            {
+                udpSocket->writeDatagram(data,data.length(),QHostAddress(this->addIp), port);
+                break;
+            }
+        case Frefused://B拒绝A添加
+            {
+                udpSocket->writeDatagram(data,data.length(),QHostAddress(this->addIp), port);
+            }
     }
-    udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
+
 
 }
 

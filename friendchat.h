@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QtNetwork>
 #include <QtGui>
+#include <QThread>
 #include "tcpclient.h"
 #include "tcpserver.h"
 

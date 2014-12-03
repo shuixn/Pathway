@@ -20,18 +20,21 @@ SOURCES += main.cpp\
     tcpclient.cpp \
     innerchat.cpp \
     qmenubutton.cpp \
-    friendchat.cpp
+    friendchat.cpp \
+    friendoperator.cpp
 
 HEADERS  += pathway.h \
     tcpserver.h \
     tcpclient.h \
     innerchat.h \
     qmenubutton.h \
-    friendchat.h
+    friendchat.h \
+    friendoperator.h
 
 FORMS    += pathway.ui \
     tcpserver.ui \
     tcpclient.ui \
     innerchat.ui \
-    friendchat.ui
+    friendchat.ui \
+    friendoperator.ui
 RESOURCES += application.qrc
