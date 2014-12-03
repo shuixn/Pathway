@@ -87,6 +87,9 @@ private slots:
 
     void reloadXML();
 
+    void refuced();
+    void addFriend(QString username,QString ipaddress,QString localhostname);
+
 signals:
     void closed();
 

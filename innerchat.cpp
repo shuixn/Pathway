@@ -148,10 +148,13 @@ void InnerChat::processPendingDatagrams()
                 {
                     //好友请求聊天
                     in >>this->userName>>this->localHostName>>this->ipAddress;
+
                     //新建udp套接字
 
+
+
                 }
-            case Fadd://B被添加
+            case Fadd:      //B被添加
                 {
 
                     in >>this->addUser>>this->addHostName>>this->addIp;
@@ -166,8 +169,9 @@ void InnerChat::processPendingDatagrams()
                         case 0:
                         {
                             //发送同意
-
-                            //激活插入本地XML数据并刷新
+                            sendMessage(Fagree,this->addIp);
+                            //激活插入本地XML数据的信号
+                            emit addFriend(this->addUser,this->addIp,this->addHostName);
 
                             break;
                         }
@@ -178,11 +182,12 @@ void InnerChat::processPendingDatagrams()
                      }
 
                 }
-            case Frefused://A被拒绝
+            case Frefused:      //A被拒绝
                 {
                     //提示B拒绝添加
+                    emit refuced();
                 }
-            case Fagree://A被同意
+            case Fagree:        //A被同意
                 {
                     //插入数据到XML并刷新
                 }

@@ -78,6 +78,9 @@ signals:
     void NewParticipanted();
     void ParticipantLefted();
 
+    void refuced();
+    void addFriend(QString username,QString ipadress,QString localhostname);
+
 private slots:
     void send();                                  //发送
     void processPendingDatagrams();               //接收数据

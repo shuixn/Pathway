@@ -49,6 +49,10 @@ pathway::pathway(QWidget *parent) :
             this,SLOT(newparticipant()));
     connect(innerchat,SIGNAL(ParticipantLefted()),
             this,SLOT(participantleft()));
+
+    connect(innerchat,SIGNAL(refuced()),this,SLOT(refuced()));
+    connect(innerchat,SIGNAL(addFriend(QString,QString,QString)),
+            this,SLOT(addFriend(QString,QString,QString)));
 }
 
 
@@ -372,6 +376,68 @@ void pathway::reloadXML()
     XmlOperator("friends.xml");
 }
 
+//对方拒绝添加
+void pathway::refuced()
+{
+    QMessageBox::warning(0,tr("Pathway温馨提示"),tr("对方拒绝添加！"),QMessageBox::Ok);
+}
+
+//同意添加对方
+void pathway::addFriend(QString username, QString ipaddress, QString localhostname)
+{
+    QString adduser     = username;
+    QString addip       = ipaddress;
+    QString addhostname = localhostname;
+    QString addport     = (QString)(friendsList.last().toInt() + 1);
+
+    QFile file("friends.xml");
+    if (!file.open(QIODevice::ReadOnly)) return;
+
+    QDomDocument doc;
+    if (!doc.setContent(&file)){file.close();return;}
+    file.close();
+
+    QDomElement root        = doc.documentElement();
+
+    QDomElement newfriend   = doc.createElement(tr("friend"));
+    QDomAttr    id             = doc.createAttribute(tr("id"));
+    QDomElement newusername = doc.createElement(tr("username"));
+    QDomElement newip       = doc.createElement(tr("ip"));
+    QDomElement newhostname = doc.createElement(tr("localhostname"));
+    QDomElement newport     = doc.createElement(tr("port"));
+    QDomText text;
+
+    QString num = root.lastChild().toElement().attribute(tr("id"));
+    int count = num.toInt() +1;
+    id.setValue(QString::number(count));                //获得了最后一个孩子结点的id，然后加1，便是新的id
+
+    newfriend.setAttributeNode(id);                     //设置好友id
+
+    text = doc.createTextNode(adduser);
+    newusername.appendChild(text);                      //用户名
+    text = doc.createTextNode(addip);
+    newip.appendChild(text);                            //ip
+    text = doc.createTextNode(addhostname);
+    newhostname.appendChild(text);                      //主机名
+    text = doc.createTextNode(addport);
+    newport.appendChild(text);                          //端口
+
+    newfriend.appendChild(newusername);                 //插入子节点
+    newfriend.appendChild(newip);
+    newfriend.appendChild(newhostname);
+    newfriend.appendChild(newport);
+    root.appendChild(newfriend);
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return ;
+    QTextStream out(&file);
+    doc.save(out,4);                                    //将文档保存到文件，4为子元素缩进字符数
+    file.close();
+
+    //重载好友列表
+
+}
+
+//小区聊天
 void pathway::on_innerPushButton_clicked()
 {
     innerchat->show();
