@@ -149,7 +149,8 @@ void InnerChat::processPendingDatagrams()
                     //好友请求聊天
                     in >>this->userName>>this->localHostName>>this->ipAddress;
 
-                    //新建udp套接字
+                    //发射信号：新建udp套接字
+                    emit newUdpSocket(this->ipAddress);
 
                     break;
 
@@ -264,6 +265,9 @@ void InnerChat::sendMessage(MessageType type, QString ipAddress)
             }
         case Fchat:
             {
+                out << address;
+                udpSocket->writeDatagram(data,data.length(),QHostAddress(ipAddress), port);
+
                 break;
             }
         case Fadd://A添加B
@@ -380,12 +384,18 @@ bool InnerChat::saveFile(const QString &fileName)
 //保存聊天记录
 void InnerChat::save()
 {
+    //获取当前时间
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    QString current_date = current_date_time.toString("yyyyMMdd.ddd");
+
     if(ui->textBrowser->document()->isEmpty())
-        QMessageBox::warning(0,tr("警告"),tr("聊天记录为空，无法保存！"),QMessageBox::Ok);
+        QMessageBox::warning(0,tr("Pathway温馨提示"),tr("聊天记录为空"),QMessageBox::Ok);
     else
     {
        //获得文件名,注意getSaveFileName函数的格式即可
-       QString fileName = QFileDialog::getSaveFileName(this,tr("保存聊天记录"),tr("聊天记录"),tr("文本(*.txt);;All File(*.*)"));
+       QString fileName = QFileDialog::getSaveFileName(this,tr("保存聊天记录"),tr("Pathway.小区.%1")
+                                                                                .arg(current_date)
+                                                       ,tr("文本(*.txt);;All File(*.*)"));
        if(!fileName.isEmpty())
            saveFile(fileName);
     }

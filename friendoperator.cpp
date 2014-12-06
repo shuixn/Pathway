@@ -20,9 +20,7 @@ FriendOperator::FriendOperator(QString fusername,QString fipaddress,
     ui->localhostnameLabel->setText(this->flocalhostname);
 
 
-    //新建好友窗口
-    //friendchat = new FriendChat(currentFriendName,currentFriendIp,currentFriendPort);
-    //friendchat->show();
+
 }
 
 FriendOperator::~FriendOperator()
@@ -105,4 +103,27 @@ void FriendOperator::removeFriend()
 void FriendOperator::on_removePushButton_clicked()
 {
     removeFriend();
+}
+
+//聊天
+void FriendOperator::on_chatPushButton_clicked()
+{
+    //发射聊天信号
+    emit fChat(this->fipaddress);
+
+    //新建好友窗口
+    friendchat = new FriendChat(this->flocalhostname,this->fipaddress,this->fport);
+
+    //设置窗体无边框
+    friendchat->setWindowFlags(Qt::Window|
+                               Qt::FramelessWindowHint|
+                               Qt::WindowSystemMenuHint|
+                               Qt::WindowMinimizeButtonHint|
+                               Qt::WindowMaximizeButtonHint
+                              );
+
+    friendchat->show();
+
+    //关闭
+    this->~FriendOperator();
 }

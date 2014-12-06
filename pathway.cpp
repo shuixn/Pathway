@@ -53,7 +53,10 @@ pathway::pathway(QWidget *parent) :
     connect(innerchat,SIGNAL(refuced()),this,SLOT(refuced()));
     connect(innerchat,SIGNAL(addFriend(QString,QString,QString)),
             this,SLOT(addFriend(QString,QString,QString)));
-    connect(innerchat,SIGNAL(friendAdded(QString)),this,SLOT(friendAdded(QString)));
+    connect(innerchat,SIGNAL(friendAdded(QString)),
+            this,SLOT(friendAdded(QString)));
+    connect(innerchat,SIGNAL(newUdpSocket(QString)),
+            this,SLOT(newUdpSocket(QString)));
 
 }
 
@@ -347,7 +350,7 @@ void pathway::XmlOperator(QString fileName){
      file.close();
 }
 
-//
+//点击好友出现好友信息
 void pathway::friendInformation()
 {
     //获取当前点击toolbutton的指针
@@ -376,6 +379,7 @@ void pathway::friendInformation()
                             currentFriendPort);
     fo->show();
     connect(fo,SIGNAL(reloadXML()),this,SLOT(reloadXML()));
+    connect(fo,SIGNAL(fChat(QString)),this,SLOT(fChat(QString)));
 
 }
 
@@ -387,6 +391,12 @@ void pathway::reloadXML()
     XmlOperator("friends.xml");
 }
 
+//好友聊天
+void pathway::fChat(QString ip)
+{
+    innerchat->sendMessage(Fchat,ip);
+}
+
 //对方拒绝添加
 void pathway::refuced()
 {
@@ -396,10 +406,11 @@ void pathway::refuced()
 //同意添加对方
 void pathway::addFriend(QString username, QString ipaddress, QString localhostname)
 {
+    int i               = friendsList.size();
     QString adduser     = username;
     QString addip       = ipaddress;
     QString addhostname = localhostname;
-    QString addport     = (QString)(friendsList.last().toInt() + 1);
+    QString addport     = (QString)((int)friendsList.at(i-1).data() + 1);
 
     QFile file("friends.xml");
     if (!file.open(QIODevice::ReadOnly)) return;
@@ -451,10 +462,11 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
 //被同意添加:插入本地XML
 void pathway::friendAdded(QString ipadress)
 {
+    int i = friendsList.size();
     QString usernameAdded;      // 好友用户名
     QString localNameAdded;     // 好友主机名
     QString ipAdded;            // 好友IP
-    QString portAdded = (QString)(friendsList.last().toInt() + 1);          // 好友端口
+    QString portAdded = (QString)((int)friendsList.at(i-1).data() + 1);          // 好友端口
 
     //遍历添加好友列表
     for(int i = 0; i < addFriendList.size(); ++i) {
@@ -511,6 +523,26 @@ void pathway::friendAdded(QString ipadress)
 
     //重载好友列表
     reloadXML();
+}
+
+//新建好友udp进行聊天
+void pathway::newUdpSocket(QString ip)
+{
+    QString fLocalHostname;      //和主机名聊天
+    QString fIpaddress = ip;
+    qint32  fPort;
+
+    //遍历好友列表
+    for(int i = 0; i < friendsList.size(); ++i) {
+        if(fIpaddress == friendsList.at(i).toUtf8().data())
+        {
+            fLocalHostname = friendsList.at(i+1).toUtf8().data();
+            fPort          = (qint32)friendsList.at(i+2).toUtf8().data();
+        }
+    }
+    //新建好友udp
+    friendchat = new FriendChat(fLocalHostname,fIpaddress,fPort);
+
 }
 
 //小区聊天

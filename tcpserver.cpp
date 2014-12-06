@@ -95,8 +95,8 @@ ui->serverStatusLabel->setText(tr("已发送 %1MB (%2MB/s) \n共%3MB 已用时:%
                      .arg(useTime/1000,0,'f',0)                             //用时
                      .arg(TotalBytes/speed/1000 - useTime/1000,0,'f',0));   //剩余时间
 
-        if(bytesWritten == TotalBytes)
-            ui->serverStatusLabel->setText(tr("传送文件 %1 成功")
+     if(bytesWritten == TotalBytes)
+          ui->serverStatusLabel->setText(tr("传送文件 %1 成功")
                                            .arg(theFileName));
 
 }
@@ -118,7 +118,7 @@ void TcpServer::on_serverOpenBtn_clicked()
 void TcpServer::refused()
 {
     tcpServer->close();
-    ui->serverStatusLabel->setText(tr("对方拒绝接收！！！"));
+    ui->serverStatusLabel->setText(tr("对方取消接收... ..."));
 }
 
 //发送

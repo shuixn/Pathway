@@ -37,10 +37,12 @@ private:
     qint64 bytesWritten;
     qint64 bytesToWrite;
     qint64 loadSize;
+
     //缓存一次发送的数据
     QByteArray outBlock;
 
     QTcpSocket *clientConnection;
+
     //计时器
     QTime time;
 
@@ -50,7 +52,7 @@ private slots:
     void on_serverOpenBtn_clicked();
     void sendMessage();
 
-   void updateClientProgress(qint64 numBytes);
+    void updateClientProgress(qint64 numBytes);
 
 signals:
     void sendFileName(QString fileName);

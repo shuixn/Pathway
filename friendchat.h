@@ -2,6 +2,7 @@
 #define FRIENDCHAT_H
 
 #include <QDialog>
+#include <QMouseEvent>
 #include <QtNetwork>
 #include <QtGui>
 #include <QThread>
@@ -18,8 +19,7 @@ enum FMessageType
     FNewParticipant,
     FParticipantLeft,
     FileName,
-    Refuse,
-    Xchat
+    Refuse
 };
 
 class FriendChat : public QDialog
@@ -42,6 +42,12 @@ public slots:
 
 
 protected:
+
+    //声明移动窗体事件
+    void mouseMoveEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
+
     void hasPendingFile(QString userName,QString serverAddress,                 //接收文件
                                 QString clientAddress,QString fileName);
     void participantLeft(QString userName,QString localHostName,QString time);  //好友离开
@@ -49,6 +55,10 @@ protected:
 
 private:
     Ui::FriendChat *ui;
+
+    //移动窗体参数
+    QPoint mLastMousePosition;
+    bool mMoving;
 
     TcpServer *server;
 
@@ -64,10 +74,11 @@ private slots:
     void sendfile();                        //点击发送文件按钮
     void processPendingDatagrams();         //接收数据
     void send();                            //发送
-    void close();                           //关闭
+    void closeChat();                       //结束聊天
     void clear();                           //清空聊天记录
     void save();                            //保存聊天记录
 
+    void on_closePushButton_clicked();
 };
 
 #endif // FRIENDCHAT_H

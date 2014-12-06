@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
-    <height>290</height>
+    <width>385</width>
+    <height>232</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QLabel" name="tcpClientStatusLabel">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>60</y>
+     <x>30</x>
+     <y>20</y>
      <width>321</width>
      <height>71</height>
     </rect>
@@ -40,8 +40,8 @@
   <widget class="QPushButton" name="tcpClientCloseBtn">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>190</y>
+     <x>220</x>
+     <y>180</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -53,10 +53,10 @@
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>140</y>
-     <width>311</width>
-     <height>23</height>
+     <x>30</x>
+     <y>120</y>
+     <width>331</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="value">
@@ -66,8 +66,8 @@
   <widget class="QPushButton" name="tcpClientCancleBtn">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>190</y>
+     <x>90</x>
+     <y>180</y>
      <width>75</width>
      <height>23</height>
     </rect>

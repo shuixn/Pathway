@@ -85,6 +85,9 @@ signals:
     //被同意添加
     void friendAdded(QString ipadress);
 
+    //新建udp好友聊天
+    void newUdpSocket(QString ipadress);
+
 private slots:
     void send();                                  //发送
     void processPendingDatagrams();               //接收数据

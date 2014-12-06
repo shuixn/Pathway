@@ -97,6 +97,12 @@ private slots:
 
     //被同意添加
     void friendAdded(QString ipadress);
+
+    //好友聊天
+    void fChat(QString ip);
+
+    //新建好友udp进行聊天
+    void newUdpSocket(QString ip);
 signals:
     void closed();
 

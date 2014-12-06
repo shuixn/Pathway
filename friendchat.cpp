@@ -4,6 +4,7 @@
 #include "QFileDialog"
 #include "QScrollBar"
 #include "QColorDialog"
+#include <QMenu>
 
 
 FriendChat::FriendChat(QString username,QString userip,qint32 port) : ui(new Ui::FriendChat)
@@ -12,14 +13,36 @@ FriendChat::FriendChat(QString username,QString userip,qint32 port) : ui(new Ui:
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
 
+    ui->closePushButton->setStyleSheet("QPushButton{background-color:rgb(255, 255, 255);\
+                                       border-radius:8px;\
+                                       border:1px;}\
+                                       QPushButton:hover{\
+                                           background-color:red;\
+                                           color:rgb(255, 255, 255);\
+                                       }");
+
     ui->lineEdit->setFocus();
     ui->lineEdit->installEventFilter(this);
+
+    //获得菜单，并向上面添加菜单
+    QMenu * menu = ui->menuPushButton->getmenu();
+
+    QAction* actionSendFile = menu->addAction("发送文件");
+    QAction* actionSave     = menu->addAction("保存历史");
+    QAction* actionDelete   = menu->addAction("删除历史");
+
+    connect(actionSendFile,SIGNAL(triggered()),
+            this,SLOT(sendfile()));
+    connect(actionSave,SIGNAL(triggered()),
+            this,SLOT(save()));
+    connect(actionDelete,SIGNAL(triggered()),
+            this,SLOT(clear()));
 
     a = 0;
     is_opened = false;
 
     friendusername = username;
-    frienduserip = userip;
+    frienduserip   = userip;
 
     ui->friendNameLabel->setText(tr("%1").arg(friendusername));
     ui->friendIpLabel->setText(tr("%1").arg(frienduserip));
@@ -44,6 +67,32 @@ FriendChat::~FriendChat()
     delete ui;
 }
 
+//窗体移动：鼠标按下事件
+void FriendChat::mousePressEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        mMoving = true;
+        mLastMousePosition = event->globalPos();
+    }
+}
+//窗体移动：鼠标移动事件
+void FriendChat::mouseMoveEvent(QMouseEvent* event)
+{
+    if( event->buttons().testFlag(Qt::LeftButton) && mMoving)
+    {
+        this->move(this->pos() + (event->globalPos() - mLastMousePosition));
+        mLastMousePosition = event->globalPos();
+    }
+}
+//窗体移动：鼠标松开事件
+void FriendChat::mouseReleaseEvent(QMouseEvent* event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        mMoving = false;
+    }
+}
 bool FriendChat::eventFilter(QObject *target, QEvent *event)
 {
     if(target == ui->lineEdit)
@@ -61,15 +110,35 @@ bool FriendChat::eventFilter(QObject *target, QEvent *event)
     return QWidget::eventFilter(target,event);
 }
 
-//处理用户离开
+//处理好友离开
 void FriendChat::participantLeft(QString userName,QString localHostName,QString time)
 {
     ui->textBrowser->setTextColor(Qt::gray);
     ui->textBrowser->setCurrentFont(QFont("Times New Roman",10));
-    ui->textBrowser->append(tr("%1 于 %2 离开！").arg(userName).arg(time));
+    ui->textBrowser->append(tr("%1 于 %2 离开！").arg(localHostName).arg(time));
+
+    switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+      tr("对方已结束通话，是否保存聊天记录？"),
+      tr("是"), tr("否"),
+      0, 1 ) )
+     {
+        case 0:
+        {
+            save();
+            break;
+        }
+        case 1:
+
+            break;
+     }
+
+    a = 1;
+    ui->textBrowser->clear();
+    this->~FriendChat();
 }
 
-QString FriendChat::getUserName()  //获取用户名
+ //获取用户名
+QString FriendChat::getUserName()
 {
     QStringList envVariables;
     envVariables << "USERNAME.*" << "USER.*" << "USERDOMAIN.*"
@@ -92,18 +161,21 @@ QString FriendChat::getUserName()  //获取用户名
     return false;
 }
 
-QString FriendChat::getIP()  //获取ip地址
+//获取ip地址
+QString FriendChat::getIP()
 {
-    QList<QHostAddress> list = QNetworkInterface::allAddresses();
-    foreach (QHostAddress address, list)
+    QString localHostName = QHostInfo::localHostName();
+
+    QHostInfo info = QHostInfo::fromName(localHostName);
+    foreach(QHostAddress address,info.addresses())
     {
-       if(address.protocol() == QAbstractSocket::IPv4Protocol) //我们使用IPv4地址
+        if(address.protocol() == QAbstractSocket::IPv4Protocol)
             return address.toString();
     }
-       return 0;
 }
 
-void FriendChat::hasPendingFile(QString userName,QString serverAddress,  //接收文件
+//接收文件
+void FriendChat::hasPendingFile(QString userName,QString serverAddress,
                             QString clientAddress,QString fileName)
 {
     QString ipAddress = getIP();
@@ -147,10 +219,7 @@ void FriendChat::processPendingDatagrams()
         QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
         switch(FMessageType)
         {
-            case Xchat:
-            {
-                break;
-            }
+
             case FMessage:
                 {
                     in >>userName >>localHostName >>ipAddress >>messagestr;
@@ -166,36 +235,36 @@ void FriendChat::processPendingDatagrams()
 
                     break;
                 }
-        case FileName:
-            {
-                in >>userName >>localHostName >> ipAddress;
-                QString clientAddress,fileName;
-                in >> clientAddress >> fileName;
-                hasPendingFile(userName,ipAddress,clientAddress,fileName);
-                break;
-            }
-        case Refuse:
-            {
-                in >> userName >> localHostName;
-                QString serverAddress;
-                in >> serverAddress;
-                QString ipAddress = getIP();
-
-                if(ipAddress == serverAddress)
+            case FileName:
                 {
-                    server->refused();
+                    in >>userName >>localHostName >> ipAddress;
+                    QString clientAddress,fileName;
+                    in >> clientAddress >> fileName;
+                    hasPendingFile(userName,ipAddress,clientAddress,fileName);
+                    break;
                 }
-                break;
-            }
-        case FParticipantLeft:
-            {
-                in >>userName >>localHostName;
-                participantLeft(userName,localHostName,time);
+            case Refuse:
+                {
+                    in >> userName >> localHostName;
+                    QString serverAddress;
+                    in >> serverAddress;
+                    QString ipAddress = getIP();
 
-                a = 1;
+                    if(ipAddress == serverAddress)
+                    {
+                        server->refused();
+                    }
+                    break;
+                }
+            case FParticipantLeft:
+                {
+                    in >>userName >>localHostName;
+                    participantLeft(userName,localHostName,time);
 
-                break;
-            }
+                    a = 1;
+
+                    break;
+                }
         }
     }
 }
@@ -211,7 +280,6 @@ void FriendChat::sentFileName(QString fileName)
 QString FriendChat::getMessage()
 {
     QString msg = ui->lineEdit->text();
-    qDebug()<<msg;
     ui->lineEdit->clear();
     ui->lineEdit->setFocus();
     return msg;
@@ -232,7 +300,7 @@ void FriendChat::sendMessage(FMessageType type , QString serverAddress)
             {
                 break;
             }
-        case FMessage :
+        case FMessage:
             {
                 if(ui->lineEdit->text() == "")
                 {
@@ -264,12 +332,19 @@ void FriendChat::sendMessage(FMessageType type , QString serverAddress)
 //保存聊天记录
 void FriendChat::save()
 {
+    //获取当前时间
+    QDateTime current_date_time = QDateTime::currentDateTime();
+    QString current_date = current_date_time.toString("yyyyMMdd");
+
     if(ui->textBrowser->document()->isEmpty())
-        QMessageBox::warning(0,tr("警告"),tr("聊天记录为空，无法保存！"),QMessageBox::Ok);
+        QMessageBox::warning(0,tr("Pathway温馨提示"),tr("聊天记录为空"),QMessageBox::Ok);
     else
     {
        //获得文件名
-       QString fileName = QFileDialog::getSaveFileName(this,tr("保存聊天记录"),tr("聊天记录"),tr("文本(*.txt);;All File(*.*)"));
+       QString fileName = QFileDialog::getSaveFileName(this,tr("保存聊天记录"),tr("Pathway.%1.%2")
+                                                                                .arg(this->friendusername)
+                                                                                .arg(current_date)
+                                                       ,tr("文本(*.txt);;All File(*.*)"));
        if(!fileName.isEmpty())
            saveFile(fileName);
     }
@@ -300,13 +375,42 @@ bool FriendChat::saveFile(const QString &fileName)
 }
 
 
-void FriendChat::close()
+void FriendChat::closeChat()
 {
-    sendMessage(FParticipantLeft);
-    a = 1;
-    ui->textBrowser->clear();
+    switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+      tr("确认结束聊天？"),
+      tr("是"), tr("否"),
+      0, 1 ) )
+    {
+        case 0:
+        {
+            switch(QMessageBox::information( this, tr("Pathway温馨提示"),
+              tr("是否保存聊天记录？"),
+              tr("是"), tr("否"),
+              0, 1 ) )
+             {
+                case 0:
+                {
+                    save();
+                    break;
+                }
+                case 1:
 
-    close();
+                    break;
+             }
+            sendMessage(FParticipantLeft);
+            a = 1;
+            ui->textBrowser->clear();
+            this->~FriendChat();
+
+            break;
+        }
+        case 1:
+        {
+            break;
+        }
+    }
+
 }
 
 //发送
@@ -329,4 +433,10 @@ void FriendChat::sendfile()
 {
     server->show();
     server->initServer();
+}
+
+//结束聊天
+void FriendChat::on_closePushButton_clicked()
+{
+    closeChat();
 }

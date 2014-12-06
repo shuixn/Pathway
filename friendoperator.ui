@@ -13,50 +13,14 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="usernameLabel">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>30</y>
-     <width>91</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>账户名</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ipLabel">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>50</y>
-     <width>91</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>ip地址</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="localhostnameLabel">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>90</y>
-     <width>54</width>
-     <height>12</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>主机名</string>
-   </property>
-  </widget>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
+  </property>
   <widget class="QPushButton" name="chatPushButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
-     <y>120</y>
+     <x>50</x>
+     <y>150</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -68,7 +32,7 @@
   <widget class="QPushButton" name="removePushButton">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>140</x>
      <y>150</y>
      <width>75</width>
      <height>23</height>
@@ -77,6 +41,45 @@
    <property name="text">
     <string>删除好友</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>40</y>
+     <width>141</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="usernameLabel">
+      <property name="maximumSize">
+       <size>
+        <width>36</width>
+        <height>26</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>账户名</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="ipLabel">
+      <property name="text">
+       <string>ip地址</string>
+      </property>
+     </widget>
+    </item>
+    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+     <widget class="QLabel" name="localhostnameLabel">
+      <property name="text">
+       <string>主机名</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

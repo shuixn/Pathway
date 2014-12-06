@@ -90,7 +90,6 @@ void TcpClient::readMessage()
 
     ui->progressBar->setMaximum(TotalBytes);
     ui->progressBar->setValue(bytesReceived);
-    qDebug()<<bytesReceived<<"received"<<TotalBytes;
 
     double speed = bytesReceived / useTime;
 
