@@ -53,6 +53,8 @@ pathway::pathway(QWidget *parent) :
     connect(innerchat,SIGNAL(refuced()),this,SLOT(refuced()));
     connect(innerchat,SIGNAL(addFriend(QString,QString,QString)),
             this,SLOT(addFriend(QString,QString,QString)));
+    connect(innerchat,SIGNAL(friendAdded(QString)),this,SLOT(friendAdded(QString)));
+
 }
 
 
@@ -131,7 +133,7 @@ void pathway::newparticipant()
         ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
 
         //如果是好友就高亮显示
-        friendEnter();
+        //friendEnter();
 
         //发送自己在线
         innerchat->sendMessage(NewParticipant);
@@ -139,6 +141,7 @@ void pathway::newparticipant()
 }
 
 //判断新用户是否是好友并操作
+/*
 void pathway::friendEnter()
 {
     //判断是否存在“我的好友”
@@ -152,7 +155,7 @@ void pathway::friendEnter()
             if(tb->text() == this->newLocalhostname)
             {
                 //设置高亮
-                tb->setToolButtonStyle(Qt::white);
+                //tb->setToolButtonStyle(Qt::white);
                 tb->setEnabled(true);
             }
             else
@@ -177,7 +180,7 @@ void pathway::friendLeft()
             if(tb->text() == this->newLocalhostname)
             {
                 //设置变暗
-                tb->setToolButtonStyle(Qt::black);
+                //tb->setToolButtonStyle(Qt::black);
                 //设置按钮不可用
                 tb->setEnabled(false);
 
@@ -185,7 +188,7 @@ void pathway::friendLeft()
         }
     }
 }
-
+*/
 //用户离开
 void pathway::participantleft()
 {
@@ -195,7 +198,7 @@ void pathway::participantleft()
     ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
 
     //好友离开操作
-    friendLeft();
+    //friendLeft();
 }
 
 //关闭
@@ -237,13 +240,21 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
     else
     {
         switch(QMessageBox::information( this, tr("Pathway温馨提示"),
-          tr("请求添加该好友?"),
+          tr("请求添加 %1?")
+                .arg(ui->peopleTableWidget->item(index.row(),2)->text()),
           tr("是"), tr("否"),
           0, 1 ) )
          {
             case 0:
             {
-                QString ip = ui->peopleTableWidget->item(index.row(),1)->text();
+                QString username      = ui->peopleTableWidget->item(index.row(),0)->text();
+                QString ip            = ui->peopleTableWidget->item(index.row(),1)->text();
+                QString localhostname = ui->peopleTableWidget->item(index.row(),2)->text();
+
+                //进入添加好友列表
+                addFriendList.append(username);
+                addFriendList.append(ip);
+                addFriendList.append(localhostname);
 
                 //发送添加好友
                 innerchat->sendMessage(Fadd,ip);
@@ -400,7 +411,7 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
     QDomElement root        = doc.documentElement();
 
     QDomElement newfriend   = doc.createElement(tr("friend"));
-    QDomAttr    id             = doc.createAttribute(tr("id"));
+    QDomAttr    id          = doc.createAttribute(tr("id"));
     QDomElement newusername = doc.createElement(tr("username"));
     QDomElement newip       = doc.createElement(tr("ip"));
     QDomElement newhostname = doc.createElement(tr("localhostname"));
@@ -434,7 +445,72 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
     file.close();
 
     //重载好友列表
+    reloadXML();
+}
 
+//被同意添加:插入本地XML
+void pathway::friendAdded(QString ipadress)
+{
+    QString usernameAdded;      // 好友用户名
+    QString localNameAdded;     // 好友主机名
+    QString ipAdded;            // 好友IP
+    QString portAdded = (QString)(friendsList.last().toInt() + 1);          // 好友端口
+
+    //遍历添加好友列表
+    for(int i = 0; i < addFriendList.size(); ++i) {
+        if(ipadress == addFriendList.at(i).toUtf8().data())
+        {
+            usernameAdded  = addFriendList.at(i-1).toUtf8().data();
+            ipAdded        = addFriendList.at(i).toUtf8().data();
+            localNameAdded = addFriendList.at(i+1).toUtf8().data();
+        }
+    }
+
+    QFile file("friends.xml");
+    if (!file.open(QIODevice::ReadOnly)) return;
+
+    QDomDocument doc;
+    if (!doc.setContent(&file)){file.close();return;}
+    file.close();
+
+    QDomElement root        = doc.documentElement();
+
+    QDomElement newfriend   = doc.createElement(tr("friend"));
+    QDomAttr    id          = doc.createAttribute(tr("id"));
+    QDomElement newusername = doc.createElement(tr("username"));
+    QDomElement newip       = doc.createElement(tr("ip"));
+    QDomElement newhostname = doc.createElement(tr("localhostname"));
+    QDomElement newport     = doc.createElement(tr("port"));
+    QDomText text;
+
+    QString num = root.lastChild().toElement().attribute(tr("id"));
+    int count = num.toInt() +1;
+    id.setValue(QString::number(count));                //获得了最后一个孩子结点的id，然后加1，便是新的id
+
+    newfriend.setAttributeNode(id);                     //设置好友id
+
+    text = doc.createTextNode(usernameAdded);
+    newusername.appendChild(text);                      //用户名
+    text = doc.createTextNode(ipAdded);
+    newip.appendChild(text);                            //ip
+    text = doc.createTextNode(localNameAdded);
+    newhostname.appendChild(text);                      //主机名
+    text = doc.createTextNode(portAdded);
+    newport.appendChild(text);                          //端口
+
+    newfriend.appendChild(newusername);                 //插入子节点
+    newfriend.appendChild(newip);
+    newfriend.appendChild(newhostname);
+    newfriend.appendChild(newport);
+    root.appendChild(newfriend);
+
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return ;
+    QTextStream out(&file);
+    doc.save(out,4);                                    //将文档保存到文件，4为子元素缩进字符数
+    file.close();
+
+    //重载好友列表
+    reloadXML();
 }
 
 //小区聊天

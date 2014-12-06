@@ -151,7 +151,7 @@ void InnerChat::processPendingDatagrams()
 
                     //新建udp套接字
 
-
+                    break;
 
                 }
             case Fadd:      //B被添加
@@ -180,16 +180,20 @@ void InnerChat::processPendingDatagrams()
                             sendMessage(Frefused);
                             break;
                      }
-
+                    break;
                 }
             case Frefused:      //A被拒绝
                 {
                     //提示B拒绝添加
                     emit refuced();
+                    break;
                 }
             case Fagree:        //A被同意
                 {
+                    in >>this->userName>>this->localHostName>>this->ipAddress;
                     //插入数据到XML并刷新
+                    emit friendAdded(this->ipAddress);
+                    break;
                 }
         }
     }
@@ -211,13 +215,14 @@ void InnerChat::changeEvent(QEvent *e)
 //获取ip地址
 QString InnerChat::getIP()
 {
-    QList<QHostAddress> list = QNetworkInterface::allAddresses();
-    foreach (QHostAddress address, list)
+    QString localHostName = QHostInfo::localHostName();
+
+    QHostInfo info = QHostInfo::fromName(localHostName);
+    foreach(QHostAddress address,info.addresses())
     {
-       if(address.protocol() == QAbstractSocket::IPv4Protocol)
+        if(address.protocol() == QAbstractSocket::IPv4Protocol)
             return address.toString();
     }
-    return 0;
 }
 
 //发送信息
@@ -270,12 +275,14 @@ void InnerChat::sendMessage(MessageType type, QString ipAddress)
             }
         case Fagree://B同意A添加
             {
-                udpSocket->writeDatagram(data,data.length(),QHostAddress(this->addIp), port);
+                out << address;
+                udpSocket->writeDatagram(data,data.length(),QHostAddress(ipAddress), port);
                 break;
             }
         case Frefused://B拒绝A添加
             {
                 udpSocket->writeDatagram(data,data.length(),QHostAddress(this->addIp), port);
+                break;
             }
     }
 

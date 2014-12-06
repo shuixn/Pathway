@@ -68,6 +68,9 @@ private:
     //好友信息列表
     QList<QString> friendsList;
 
+    //添加好友列表
+    QList<QString> addFriendList;
+
     QString newUsername;
     QString newIpaddress;
     QString newLocalhostname;
@@ -88,8 +91,12 @@ private slots:
     void reloadXML();
 
     void refuced();
+
+    //同意添加好友
     void addFriend(QString username,QString ipaddress,QString localhostname);
 
+    //被同意添加
+    void friendAdded(QString ipadress);
 signals:
     void closed();
 

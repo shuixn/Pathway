@@ -79,7 +79,11 @@ signals:
     void ParticipantLefted();
 
     void refuced();
+    //同意添加好友
     void addFriend(QString username,QString ipadress,QString localhostname);
+
+    //被同意添加
+    void friendAdded(QString ipadress);
 
 private slots:
     void send();                                  //发送
