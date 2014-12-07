@@ -249,7 +249,7 @@ void InnerChat::sendMessage(MessageType type, QString ipAddress)
                 break;
             }
 
-        case Message :
+        case Message:
             {
                 if(ui->lineEdit->text() == "")
                 {

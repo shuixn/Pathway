@@ -7,7 +7,7 @@
 #include <QMenu>
 
 
-FriendChat::FriendChat(QString username,QString userip,qint32 port) : ui(new Ui::FriendChat)
+FriendChat::FriendChat(QString username,QString userip,QString port) : ui(new Ui::FriendChat)
 {
     ui->setupUi(this);
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
@@ -49,7 +49,7 @@ FriendChat::FriendChat(QString username,QString userip,qint32 port) : ui(new Ui:
 
     //UDP部分
     fchat = new QUdpSocket(this);
-    fport = port;
+    fport = port.toInt();
 
     fchat->bind(QHostAddress(getIP()), fport);
 

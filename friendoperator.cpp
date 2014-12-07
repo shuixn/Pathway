@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 FriendOperator::FriendOperator(QString fusername,QString fipaddress,
-                               QString flocalhostname,qint32 fport):
+                               QString flocalhostname,QString fport):
     ui(new Ui::FriendOperator)
 {
     ui->setupUi(this);

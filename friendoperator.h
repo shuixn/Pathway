@@ -15,14 +15,14 @@ class FriendOperator : public QDialog
     Q_OBJECT
 
 public:
-    FriendOperator(QString fusername,QString fipaddress,QString flocalhostname,qint32 fport);
+    FriendOperator(QString fusername,QString fipaddress,QString flocalhostname,QString fport);
 
     ~FriendOperator();
 
     FriendChat *friendchat;
 
     QString fusername,fipaddress,flocalhostname;
-    qint32 fport;
+    QString fport;
 
 private:
     Ui::FriendOperator *ui;
