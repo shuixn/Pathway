@@ -227,7 +227,7 @@ QString InnerChat::getIP()
 }
 
 //发送信息
-void InnerChat::sendMessage(MessageType type, QString ipAddress)
+void InnerChat::sendMessage(MessageType type, QString ipAddress,QString iport)
 {
     QByteArray data;
     QDataStream out(&data,QIODevice::WriteOnly);

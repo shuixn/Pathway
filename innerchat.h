@@ -43,7 +43,7 @@ public:
     QString getIP();                                        //获取本地IP
     QString getMessage();                                   //获取要发送的文本信息
 
-    void sendMessage(MessageType type,QString ipAddress="");
+    void sendMessage(MessageType type,QString ipAddress="",QString iport="");
 
     int port;
 

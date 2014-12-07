@@ -27,12 +27,15 @@ class FriendChat : public QDialog
     Q_OBJECT
 public:
     ~FriendChat();
-    FriendChat(QString username, QString userip,QString port);
+    FriendChat(QString username, QString userip,QString fport,QString iport);
+
     QString frienduserip;
     QString friendusername;
 
     QUdpSocket *fchat;
     int fport;
+    int iport;
+
     void sendMessage(FMessageType type,QString serverAddress="");
     quint16 a;
 

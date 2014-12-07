@@ -250,6 +250,13 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
          {
             case 0:
             {
+                //找到最后一位好友的iport
+                int i = friendsList.size();
+                QString last = friendsList[i-1].toUtf8().data();
+
+                //使端口+1成为下一位好友的专属端口号
+                int lastport = last.toInt() + 1;
+
                 QString username      = ui->peopleTableWidget->item(index.row(),0)->text();
                 QString ip            = ui->peopleTableWidget->item(index.row(),1)->text();
                 QString localhostname = ui->peopleTableWidget->item(index.row(),2)->text();
@@ -258,8 +265,9 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
                 addFriendList.append(username);
                 addFriendList.append(ip);
                 addFriendList.append(localhostname);
+                //addFriendList.append();
 
-                //发送添加好友
+                //发送添加好友,同时发送自己的好友专属端口
                 innerchat->sendMessage(Fadd,ip);
 
                 break;
@@ -359,16 +367,18 @@ void pathway::friendInformation()
     QString currentFriendUsername;      // 当前好友用户名
     QString currentFriendLocalName;     // 当前好友主机名
     QString currentFriendIp;            // 当前好友IP
-    QString  currentFriendPort;          // 当前好友端口
+    QString currentFriendPort;          // 当前好友端口（发送信息到好友端口）
+    QString currentIPort;               // 当前我的端口（接收当前好友的信息）
 
     //遍历链表
     for(int i = 0; i < friendsList.size(); ++i) {
         if(clickedToolBtn->text() == friendsList.at(i).toUtf8().data())
         {
             currentFriendLocalName = clickedToolBtn->text();
-            currentFriendUsername = friendsList.at(i-2).toUtf8().data();
-            currentFriendIp   = friendsList.at(i-1).toUtf8().data();
-            currentFriendPort = friendsList.at(i+1).toUtf8().data();
+            currentFriendUsername  = friendsList.at(i-2).toUtf8().data();
+            currentFriendIp        = friendsList.at(i-1).toUtf8().data();
+            currentFriendPort      = friendsList.at(i+1).toUtf8().data();
+            currentIPort           = friendsList.at(i+2).toUtf8().data();
         }
     }
 
@@ -376,7 +386,8 @@ void pathway::friendInformation()
     fo = new FriendOperator(currentFriendUsername,
                             currentFriendIp,
                             currentFriendLocalName,
-                            currentFriendPort);
+                            currentFriendPort,
+                            currentIPort);
 
     connect(fo,SIGNAL(reloadXML()),this,SLOT(reloadXML()));
     connect(fo,SIGNAL(fChat(QString)),this,SLOT(fChat(QString)));
@@ -533,6 +544,7 @@ void pathway::newUdpSocket(QString ip)
     QString fLocalHostname;      //和主机名聊天
     QString fIpaddress = ip;
     QString  fPort;
+    QString  iPort;
 
     //遍历好友列表
     for(int i = 0; i < friendsList.size(); ++i) {
@@ -540,10 +552,11 @@ void pathway::newUdpSocket(QString ip)
         {
             fLocalHostname = friendsList.at(i+1).toUtf8().data();
             fPort          = friendsList.at(i+2).toUtf8().data();
+            iPort          = friendsList.at(i+3).toUtf8().data();
         }
     }
     //新建好友udp
-    friendchat = new FriendChat(fLocalHostname,fIpaddress,fPort);
+    friendchat = new FriendChat(fLocalHostname,fIpaddress,fPort,iPort);
     friendchat->show();
 }
 

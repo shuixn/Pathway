@@ -5,7 +5,7 @@
 #include <QMessageBox>
 
 FriendOperator::FriendOperator(QString fusername,QString fipaddress,
-                               QString flocalhostname,QString fport):
+                               QString flocalhostname,QString fport,QString iport):
     ui(new Ui::FriendOperator)
 {
     ui->setupUi(this);
@@ -14,6 +14,7 @@ FriendOperator::FriendOperator(QString fusername,QString fipaddress,
     this->fipaddress     = fipaddress;
     this->flocalhostname = flocalhostname;
     this->fport          = fport;
+    this->iport          = iport;
 
     ui->usernameLabel->setText(this->fusername);
     ui->ipLabel->setText(this->fipaddress);
@@ -112,7 +113,7 @@ void FriendOperator::on_chatPushButton_clicked()
     emit fChat(this->fipaddress);
 
     //新建好友窗口
-    friendchat = new FriendChat(this->flocalhostname,this->fipaddress,this->fport);
+    friendchat = new FriendChat(this->flocalhostname,this->fipaddress,this->fport,this->iport);
 
     //设置窗体无边框
     friendchat->setWindowFlags(Qt::Window|

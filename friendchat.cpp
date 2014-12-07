@@ -7,7 +7,7 @@
 #include <QMenu>
 
 
-FriendChat::FriendChat(QString username,QString userip,QString port) : ui(new Ui::FriendChat)
+FriendChat::FriendChat(QString username,QString userip,QString fport,QString iport) : ui(new Ui::FriendChat)
 {
     ui->setupUi(this);
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
@@ -47,15 +47,17 @@ FriendChat::FriendChat(QString username,QString userip,QString port) : ui(new Ui
     ui->friendNameLabel->setText(tr("%1").arg(friendusername));
     ui->friendIpLabel->setText(tr("%1").arg(frienduserip));
 
-    //UDP部分
+    //新建UDP套接字
     fchat = new QUdpSocket(this);
-    fport = port.toInt();
+    this->fport = fport.toInt();
+    this->iport = iport.toInt();
 
-    fchat->bind(QHostAddress(getIP()), fport);
+    //绑定好友专属端口
+    fchat->bind(QHostAddress(getIP()), this->iport);
 
     connect(fchat, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));
 
-    //TCP部分
+    //新建TCP套接字
     server = new TcpServer(this);
     connect(server,SIGNAL(sendFileName(QString)),this,SLOT(sentFileName(QString)));
 
