@@ -137,7 +137,7 @@ void pathway::newparticipant()
         ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
 
         //如果是好友就高亮显示
-        //friendEnter();
+        friendEnter();
 
         //发送自己在线
         innerchat->sendMessage(NewParticipant);
@@ -145,26 +145,29 @@ void pathway::newparticipant()
 }
 
 //判断新用户是否是好友并操作
-/*
+
 void pathway::friendEnter()
 {
     //判断是否存在“我的好友”
-    if(ui->friendToolBox->itemText(1) == "我的好友")
+    if(ui->friendToolBox->itemText(0) == "我的好友")
     {
         //遍历所有toolbtn
-        QObjectList list = children();
+        QObjectList list = ui->friendToolBox->currentWidget()->children();
         QToolButton *tb;
         foreach (QObject *obj, list) {
             tb = qobject_cast<QToolButton*>(obj);
-            if(tb->text() == this->newLocalhostname)
+            if(tb)
             {
-                //设置高亮
-                //tb->setToolButtonStyle(Qt::white);
-                tb->setEnabled(true);
-            }
-            else
-            {
-                tb->setEnabled(false);
+                if(tb->text() == this->newLocalhostname)
+                {
+                    //设置高亮
+                    tb->setStyleSheet("color:rgb(255, 255, 255);");
+                    tb->setEnabled(true);
+                }
+                else
+                {
+                    tb->setEnabled(false);
+                }
             }
         }
     }
@@ -174,25 +177,28 @@ void pathway::friendEnter()
 void pathway::friendLeft()
 {
     //判断是否存在“我的好友”
-    if(ui->friendToolBox->itemText(1) == "我的好友")
+    if(ui->friendToolBox->itemText(0) == "我的好友")
     {
         //遍历所有toolbtn
-        QObjectList list = children();
+        QObjectList list = ui->friendToolBox->currentWidget()->children();
         QToolButton *tb;
         foreach (QObject *obj, list) {
             tb = qobject_cast<QToolButton*>(obj);
-            if(tb->text() == this->newLocalhostname)
+            if(tb)
             {
-                //设置变暗
-                //tb->setToolButtonStyle(Qt::black);
-                //设置按钮不可用
-                tb->setEnabled(false);
+                if(tb->text() == this->newLocalhostname)
+                {
+                    //设置变暗
+                    tb->setStyleSheet("color:rgb(0, 0, 0);");
+                    //设置按钮不可用
+                    tb->setEnabled(false);
 
+                }
             }
         }
     }
 }
-*/
+
 //用户离开
 void pathway::participantleft()
 {
@@ -202,7 +208,7 @@ void pathway::participantleft()
     ui->peopleLabel->setText(tr("附近的人：%1").arg(ui->peopleTableWidget->rowCount()));
 
     //好友离开操作
-    //friendLeft();
+    friendLeft();
 }
 
 //关闭
@@ -353,11 +359,12 @@ void pathway::XmlOperator(QString fileName){
      }
      layout->addStretch();
 
-     ui->friendToolBox->addItem((QWidget*)groupBox,tr("我的好友"));
+     ui->friendToolBox->insertItem(0,(QWidget*)groupBox,tr("我的好友"));
 
-     ui->friendToolBox->setCurrentIndex(1);
+     ui->friendToolBox->setCurrentIndex(0);
 
      file.close();
+
 }
 
 //点击好友出现好友信息
@@ -402,7 +409,7 @@ void pathway::friendInformation()
 void pathway::reloadXML()
 {
     //刷新好友列表
-    ui->friendToolBox->removeItem(1);
+    ui->friendToolBox->removeItem(0);
     XmlOperator("friends.xml");
 }
 
@@ -582,7 +589,15 @@ void pathway::newUdpSocket(QString ip)
     }
     //新建好友udp
     friendchat = new FriendChat(fLocalHostname,fIpaddress,fPort,iPort);
-    friendchat->show();
+
+    //设置窗体无边框
+    friendchat->setWindowFlags(Qt::Window|
+                               Qt::FramelessWindowHint|
+                               Qt::WindowSystemMenuHint|
+                               Qt::WindowMinimizeButtonHint|
+                               Qt::WindowMaximizeButtonHint
+                              );
+    //friendchat->show();
 }
 
 //小区聊天

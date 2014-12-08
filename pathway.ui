@@ -53,6 +53,9 @@
       <string notr="true">background-color: rgb(255, 255, 255);
 border:0px;</string>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
@@ -216,7 +219,8 @@ border:0px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(214, 214, 214);</string>
+     <string notr="true">background-color: rgb(214, 214, 214);
+</string>
     </property>
     <property name="title">
      <string/>

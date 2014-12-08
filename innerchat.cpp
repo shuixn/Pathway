@@ -20,13 +20,7 @@ InnerChat::InnerChat(QWidget *parent) :
                                            background-color:red;\
                                            color:rgb(255, 255, 255);\
                                        }");
-    ui->minPushButton->setStyleSheet("QPushButton{background-color:rgb(177, 177, 177);\
-                                       border-radius:8px;\
-                                       border:1px;}\
-                                       QPushButton:hover{\
-                                           background-color:rgb(48, 133, 206);\
-                                           color:rgb(255, 255, 255);\
-                                       }");
+
     ui->menuPushButton->setStyleSheet("QPushButton{background-color:rgb(229, 229, 229);\
                                        border:1px;}\
                                        QPushButton:hover{\
@@ -344,11 +338,6 @@ void InnerChat::on_closePushButton_clicked()
     this->hide();
 }
 
-//最小化
-void InnerChat::on_minPushButton_clicked()
-{
-    this->hide();
-}
 bool InnerChat::eventFilter(QObject *target, QEvent *event)
 {
     if(target == ui->lineEdit)

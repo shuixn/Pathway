@@ -97,7 +97,6 @@ private slots:
     void clear();                                 //清除聊天记录
     void save();                                  //保存历史
     void on_closePushButton_clicked();            //关闭
-    void on_minPushButton_clicked();              //最小化
 
 };
 
