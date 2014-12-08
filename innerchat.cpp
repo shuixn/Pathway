@@ -158,7 +158,7 @@ void InnerChat::processPendingDatagrams()
             case Fadd:      //B被添加
                 {
 
-                    in >>this->addUser>>this->addHostName>>this->addIp;
+                    in >>this->addUser>>this->addHostName>>this->addIp>>this->addFport;
 
                     switch(QMessageBox::information( this, tr("Pathway温馨提示"),
                       tr("IP地址为 %1，主机名为 %2。请求添加你为好友！是否添加？")
@@ -169,10 +169,11 @@ void InnerChat::processPendingDatagrams()
                      {
                         case 0:
                         {
-                            //发送同意
-                            sendMessage(Fagree,this->addIp);
+
+                            emit sendAgree(this->addIp);
+
                             //激活插入本地XML数据的信号
-                            emit addFriend(this->addUser,this->addIp,this->addHostName);
+                            emit addFriend(this->addUser,this->addIp,this->addHostName,this->addFport);
 
                             break;
                         }
@@ -191,9 +192,10 @@ void InnerChat::processPendingDatagrams()
                 }
             case Fagree:        //A被同意
                 {
-                    in >>this->userName>>this->localHostName>>this->ipAddress;
+                    //接收B的专属端口号
+                    in >>this->userName>>this->localHostName>>this->ipAddress>>this->fport;
                     //插入数据到XML并刷新
-                    emit friendAdded(this->ipAddress);
+                    emit friendAdded(this->ipAddress,this->fport);
                     break;
                 }
         }
@@ -272,14 +274,14 @@ void InnerChat::sendMessage(MessageType type, QString ipAddress,QString iport)
             }
         case Fadd://A添加B
             {
-                out << address;
+                out << address << iport; //发送好友专属端口
 
                 udpSocket->writeDatagram(data,data.length(),QHostAddress(ipAddress), port);
                 break;
             }
         case Fagree://B同意A添加
             {
-                out << address;
+                out << address << iport; //发送好友专属端口
                 udpSocket->writeDatagram(data,data.length(),QHostAddress(ipAddress), port);
                 break;
             }

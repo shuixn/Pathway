@@ -51,13 +51,14 @@ pathway::pathway(QWidget *parent) :
             this,SLOT(participantleft()));
 
     connect(innerchat,SIGNAL(refuced()),this,SLOT(refuced()));
-    connect(innerchat,SIGNAL(addFriend(QString,QString,QString)),
-            this,SLOT(addFriend(QString,QString,QString)));
-    connect(innerchat,SIGNAL(friendAdded(QString)),
-            this,SLOT(friendAdded(QString)));
+    connect(innerchat,SIGNAL(addFriend(QString,QString,QString,QString)),
+            this,SLOT(addFriend(QString,QString,QString,QString)));
+    connect(innerchat,SIGNAL(friendAdded(QString,QString)),
+            this,SLOT(friendAdded(QString,QString)));
     connect(innerchat,SIGNAL(newUdpSocket(QString)),
             this,SLOT(newUdpSocket(QString)));
-
+    connect(innerchat,SIGNAL(sendAgree(QString)),
+            this,SLOT(sendAgree(QString)));
 }
 
 
@@ -251,11 +252,12 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
             case 0:
             {
                 //找到最后一位好友的iport
-                int i = friendsList.size();
-                QString last = friendsList[i-1].toUtf8().data();
+                int i                 = friendsList.size();
+                QString last          = friendsList[i-1].toUtf8().data();
 
                 //使端口+1成为下一位好友的专属端口号
-                int lastport = last.toInt() + 1;
+                int lastport          = last.toInt() + 1;
+                this->iport           = QString::number(lastport);      //转换为字符串
 
                 QString username      = ui->peopleTableWidget->item(index.row(),0)->text();
                 QString ip            = ui->peopleTableWidget->item(index.row(),1)->text();
@@ -265,10 +267,10 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
                 addFriendList.append(username);
                 addFriendList.append(ip);
                 addFriendList.append(localhostname);
-                //addFriendList.append();
+                addFriendList.append(this->iport);
 
                 //发送添加好友,同时发送自己的好友专属端口
-                innerchat->sendMessage(Fadd,ip);
+                innerchat->sendMessage(Fadd,ip,this->iport);
 
                 break;
             }
@@ -416,14 +418,29 @@ void pathway::refuced()
     QMessageBox::warning(0,tr("Pathway温馨提示"),tr("对方拒绝添加！"),QMessageBox::Ok);
 }
 
-//同意添加对方
-void pathway::addFriend(QString username, QString ipaddress, QString localhostname)
+//发送同意和好友专属端口号
+void pathway::sendAgree(QString ipadress)
 {
-    int i               = friendsList.size();
+    //找到最后一位好友的iport
+    int i                 = friendsList.size();
+    QString last          = friendsList[i-1].toUtf8().data();
+
+    //使端口+1成为下一位好友的专属端口号
+    int lastport          = last.toInt() + 1;
+    this->iport           = QString::number(lastport);      //转换为字符串
+
+    //发送
+    innerchat->sendMessage(Fagree,ipadress,this->iport);
+}
+
+//同意添加对方
+void pathway::addFriend(QString username, QString ipaddress, QString localhostname,QString fport)
+{
     QString adduser     = username;
     QString addip       = ipaddress;
     QString addhostname = localhostname;
-    QString addport     = (QString)((int)friendsList.at(i-1).data() + 1);
+    QString addfport    = fport;
+    QString addiport    = this->iport;
 
     QFile file("friends.xml");
     if (!file.open(QIODevice::ReadOnly)) return;
@@ -439,7 +456,8 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
     QDomElement newusername = doc.createElement(tr("username"));
     QDomElement newip       = doc.createElement(tr("ip"));
     QDomElement newhostname = doc.createElement(tr("localhostname"));
-    QDomElement newport     = doc.createElement(tr("port"));
+    QDomElement newfport    = doc.createElement(tr("fport"));
+    QDomElement newiport    = doc.createElement(tr("iport"));
     QDomText text;
 
     QString num = root.lastChild().toElement().attribute(tr("id"));
@@ -454,13 +472,16 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
     newip.appendChild(text);                            //ip
     text = doc.createTextNode(addhostname);
     newhostname.appendChild(text);                      //主机名
-    text = doc.createTextNode(addport);
-    newport.appendChild(text);                          //端口
+    text = doc.createTextNode(addfport);
+    newfport.appendChild(text);                         //好友端口
+    text = doc.createTextNode(addiport);
+    newiport.appendChild(text);                         //好友专属端口
 
     newfriend.appendChild(newusername);                 //插入子节点
     newfriend.appendChild(newip);
     newfriend.appendChild(newhostname);
-    newfriend.appendChild(newport);
+    newfriend.appendChild(newfport);
+    newfriend.appendChild(newiport);
     root.appendChild(newfriend);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return ;
@@ -473,13 +494,13 @@ void pathway::addFriend(QString username, QString ipaddress, QString localhostna
 }
 
 //被同意添加:插入本地XML
-void pathway::friendAdded(QString ipadress)
+void pathway::friendAdded(QString ipadress,QString fport)
 {
-    int i = friendsList.size();
     QString usernameAdded;      // 好友用户名
     QString localNameAdded;     // 好友主机名
     QString ipAdded;            // 好友IP
-    QString portAdded = (QString)((int)friendsList.at(i-1).data() + 1);          // 好友端口
+    QString fportAdded = fport; // 好友端口
+    QString iportAdded = this->iport;
 
     //遍历添加好友列表
     for(int i = 0; i < addFriendList.size(); ++i) {
@@ -505,7 +526,8 @@ void pathway::friendAdded(QString ipadress)
     QDomElement newusername = doc.createElement(tr("username"));
     QDomElement newip       = doc.createElement(tr("ip"));
     QDomElement newhostname = doc.createElement(tr("localhostname"));
-    QDomElement newport     = doc.createElement(tr("port"));
+    QDomElement newfport     = doc.createElement(tr("fport"));
+    QDomElement newiport     = doc.createElement(tr("iport"));
     QDomText text;
 
     QString num = root.lastChild().toElement().attribute(tr("id"));
@@ -520,13 +542,16 @@ void pathway::friendAdded(QString ipadress)
     newip.appendChild(text);                            //ip
     text = doc.createTextNode(localNameAdded);
     newhostname.appendChild(text);                      //主机名
-    text = doc.createTextNode(portAdded);
-    newport.appendChild(text);                          //端口
+    text = doc.createTextNode(fportAdded);
+    newfport.appendChild(text);                         //好友端口
+    text = doc.createTextNode(iportAdded);
+    newiport.appendChild(text);                         //好友专属端口
 
     newfriend.appendChild(newusername);                 //插入子节点
     newfriend.appendChild(newip);
     newfriend.appendChild(newhostname);
-    newfriend.appendChild(newport);
+    newfriend.appendChild(newfport);
+    newfriend.appendChild(newiport);
     root.appendChild(newfriend);
 
     if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return ;

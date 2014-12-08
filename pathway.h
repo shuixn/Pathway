@@ -36,6 +36,8 @@ public:
     FriendChat *friendchat;                 //保存friendchat类指针
     FriendOperator *fo;                     //保存查看好友信息类指针
 
+    QString iport;
+
     void XmlOperator(QString fileName);     //读取本地好友数据
     void friendEnter();                     //判断新用户是否是好友并操作
     void friendLeft();                      //好友离开操作
@@ -93,16 +95,19 @@ private slots:
     void refuced();
 
     //同意添加好友
-    void addFriend(QString username,QString ipaddress,QString localhostname);
+    void addFriend(QString username,QString ipaddress,QString localhostname,QString fport);
 
     //被同意添加
-    void friendAdded(QString ipadress);
+    void friendAdded(QString ipadress,QString fport);
 
     //好友聊天
     void fChat(QString ip);
 
     //新建好友udp进行聊天
     void newUdpSocket(QString ip);
+
+    //发送同意和好友专属端口号
+    void sendAgree(QString ipadress);
 signals:
     void closed();
 

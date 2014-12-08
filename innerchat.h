@@ -36,8 +36,8 @@ public:
 
     QString time;
 
-    QString userName,localHostName,ipAddress;
-    QString addUser,addHostName,addIp;
+    QString userName,localHostName,ipAddress,fport;
+    QString addUser,addHostName,addIp,addFport;
 
     QString getUserName();                                  //获取本地用户名
     QString getIP();                                        //获取本地IP
@@ -80,13 +80,16 @@ signals:
 
     void refuced();
     //同意添加好友
-    void addFriend(QString username,QString ipadress,QString localhostname);
+    void addFriend(QString username,QString ipadress,QString localhostname,QString fport);
 
     //被同意添加
-    void friendAdded(QString ipadress);
+    void friendAdded(QString ipadress,QString fport);
 
     //新建udp好友聊天
     void newUdpSocket(QString ipadress);
+
+    //发送同意信号
+    void sendAgree(QString ipadress);
 
 private slots:
     void send();                                  //发送
