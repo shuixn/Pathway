@@ -5,7 +5,8 @@
 #include <QMessageBox>
 
 FriendOperator::FriendOperator(QString fusername,QString fipaddress,
-                               QString flocalhostname,QString fport,QString iport):
+                               QString flocalhostname,QString fport,
+                               QString iport,bool flag):
     ui(new Ui::FriendOperator)
 {
     ui->setupUi(this);
@@ -20,6 +21,8 @@ FriendOperator::FriendOperator(QString fusername,QString fipaddress,
     ui->ipLabel->setText(this->fipaddress);
     ui->localhostnameLabel->setText(this->flocalhostname);
 
+    //管理员设为不可删除
+    if(!flag)  ui->removePushButton->setEnabled(false);
 
 
 }

@@ -8,7 +8,6 @@ TcpClient::TcpClient(QWidget *parent) :
     ui(new Ui::TcpClient)
 {
     ui->setupUi(this);
-    this->setFixedSize(350,180);
 
     TotalBytes = 0;
     bytesReceived = 0;

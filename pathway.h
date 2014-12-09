@@ -81,7 +81,8 @@ private slots:
     void on_peopleTableWidget_doubleClicked(QModelIndex index);     //双击附近的人
     void on_closePushButton_clicked();                              //关闭
     void on_minPushButton_clicked();                                //最小化
-    void friendInformation();
+
+    void friendInformation();                                       //好友信息
 
     void newparticipant();
     void participantleft();

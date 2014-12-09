@@ -48,7 +48,6 @@ private:
 
 private slots:
     void on_serverSendBtn_clicked();
-    void on_serverCloseBtn_clicked();
     void on_serverOpenBtn_clicked();
     void sendMessage();
 

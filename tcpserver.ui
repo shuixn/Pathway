@@ -13,19 +13,6 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="serverCloseBtn">
-   <property name="geometry">
-    <rect>
-     <x>203</x>
-     <y>161</y>
-     <width>75</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>退出</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="serverStatusLabel">
    <property name="geometry">
     <rect>
@@ -53,8 +40,8 @@
   <widget class="QPushButton" name="serverOpenBtn">
    <property name="geometry">
     <rect>
-     <x>41</x>
-     <y>161</y>
+     <x>70</x>
+     <y>160</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -66,8 +53,8 @@
   <widget class="QPushButton" name="serverSendBtn">
    <property name="geometry">
     <rect>
-     <x>122</x>
-     <y>161</y>
+     <x>160</x>
+     <y>160</y>
      <width>75</width>
      <height>23</height>
     </rect>

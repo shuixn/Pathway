@@ -127,7 +127,7 @@ void pathway::newparticipant()
     if(bb)
     {
         QTableWidgetItem *user = new QTableWidgetItem(this->newUsername);
-        QTableWidgetItem *ip = new QTableWidgetItem(this->newIpaddress);
+        QTableWidgetItem *ip   = new QTableWidgetItem(this->newIpaddress);
         QTableWidgetItem *host = new QTableWidgetItem(this->newLocalhostname);
         ui->peopleTableWidget->insertRow(0);
         ui->peopleTableWidget->setItem(0,0,user);
@@ -144,8 +144,7 @@ void pathway::newparticipant()
     }
 }
 
-//判断新用户是否是好友并操作
-
+//判断好友在线操作
 void pathway::friendEnter()
 {
     //判断是否存在“我的好友”
@@ -162,11 +161,6 @@ void pathway::friendEnter()
                 {
                     //设置高亮
                     tb->setStyleSheet("color:rgb(255, 255, 255);");
-                    tb->setEnabled(true);
-                }
-                else
-                {
-                    tb->setEnabled(false);
                 }
             }
         }
@@ -190,8 +184,6 @@ void pathway::friendLeft()
                 {
                     //设置变暗
                     tb->setStyleSheet("color:rgb(0, 0, 0);");
-                    //设置按钮不可用
-                    tb->setEnabled(false);
 
                 }
             }
@@ -350,7 +342,7 @@ void pathway::XmlOperator(QString fileName){
         toolBtn->setIcon( QPixmap( ":/images/friend.jpg") );
         toolBtn->setIconSize( QPixmap( ":/images/friend.jpg").size());
 
-        toolBtn->setToolButtonStyle( Qt::ToolButtonTextBesideIcon);
+        toolBtn->setToolButtonStyle( Qt::ToolButtonTextBesideIcon);//图标与文本在一行
 
         layout->addWidget(toolBtn);
 
@@ -367,6 +359,7 @@ void pathway::XmlOperator(QString fileName){
 
 }
 
+
 //点击好友出现好友信息
 void pathway::friendInformation()
 {
@@ -378,6 +371,7 @@ void pathway::friendInformation()
     QString currentFriendIp;            // 当前好友IP
     QString currentFriendPort;          // 当前好友端口（发送信息到好友端口）
     QString currentIPort;               // 当前我的端口（接收当前好友的信息）
+    bool    flag = 1;
 
     //遍历链表
     for(int i = 0; i < friendsList.size(); ++i) {
@@ -391,12 +385,18 @@ void pathway::friendInformation()
         }
     }
 
+    if(clickedToolBtn->text() == "OnlineConsultation")
+    {
+        flag = 0;
+    }
+
     //查看好友信息
     fo = new FriendOperator(currentFriendUsername,
                             currentFriendIp,
                             currentFriendLocalName,
                             currentFriendPort,
-                            currentIPort);
+                            currentIPort,
+                            flag);
 
     connect(fo,SIGNAL(reloadXML()),this,SLOT(reloadXML()));
     connect(fo,SIGNAL(fChat(QString)),this,SLOT(fChat(QString)));
@@ -597,7 +597,6 @@ void pathway::newUdpSocket(QString ip)
                                Qt::WindowMinimizeButtonHint|
                                Qt::WindowMaximizeButtonHint
                               );
-    //friendchat->show();
 }
 
 //小区聊天

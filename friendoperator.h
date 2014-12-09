@@ -19,7 +19,8 @@ public:
                    QString fipaddress,
                    QString flocalhostname,
                    QString fport,
-                   QString iport);
+                   QString iport,
+                   bool    flag);
 
     ~FriendOperator();
 
