@@ -78,23 +78,28 @@ void FriendOperator::removeFriend()
                 QDomNode dom_node = list.item(i);
                 QDomElement element = dom_node.toElement();
 
+                //匹配IP
                 if(this->fipaddress == element.firstChild().nextSibling().toElement().text())
                 {
-                    //删除结点
-                    root.removeChild(list.at(i));
-                    //保存更改
-                    QFile file(fileName);
-                    if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return ;
-                    QTextStream out(&file);
-                    document.save(out,4);
-                    file.close();
+                    //匹配主机名
+                    if(this->flocalhostname == element.firstChild().nextSibling().nextSibling().toElement().text())
+                    {
+                        //删除结点
+                        root.removeChild(list.at(i));
+                        //保存更改
+                        QFile file(fileName);
+                        if(!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) return;
+                        QTextStream out(&file);
+                        document.save(out,4);
+                        file.close();
+                    }
                 }
             }
-            //关闭
-            this->~FriendOperator();
 
             //重新载入XML
             emit reloadXML();
+            //关闭
+            this->~FriendOperator();
 
             break;
         }

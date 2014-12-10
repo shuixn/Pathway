@@ -96,8 +96,8 @@ pathway::~pathway()
 
 void pathway::getData(QString username, QString ipaddress, QString localhostname)
 {
-    this->newUsername = username;
-    this->newIpaddress = ipaddress;
+    this->newUsername      = username;
+    this->newIpaddress     = ipaddress;
     this->newLocalhostname = localhostname;
 }
 
@@ -241,6 +241,17 @@ void pathway::on_peopleTableWidget_doubleClicked(QModelIndex index)
     }
     else
     {
+        //如果已经是好友就返回
+        //遍历链表
+        for(int i = 0; i < friendsList.size(); ++i) {
+            if(ui->peopleTableWidget->item(index.row(),1)->text()
+                    == friendsList.at(i).toUtf8().data())
+            {
+                QMessageBox::warning(0,tr("Pathway温馨提示"),tr("对方已是你的好友！"),QMessageBox::Ok);
+                return;
+            }
+        }
+
         switch(QMessageBox::information( this, tr("Pathway温馨提示"),
           tr("请求添加 %1?")
                 .arg(ui->peopleTableWidget->item(index.row(),2)->text()),
