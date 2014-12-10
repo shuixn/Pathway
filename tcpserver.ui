@@ -6,32 +6,40 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>312</width>
-    <height>252</height>
+    <width>310</width>
+    <height>218</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(239, 239, 239);</string>
+  </property>
   <widget class="QLabel" name="serverStatusLabel">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>301</width>
-     <height>61</height>
+     <x>20</x>
+     <y>30</y>
+     <width>271</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Agency FB</family>
+     <family>幼圆 12</family>
      <pointsize>12</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>9</weight>
+     <italic>false</italic>
+     <bold>false</bold>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">font: 75 12pt &quot;幼圆&quot; bold;
+color:rgb(62, 139, 255);</string>
+   </property>
    <property name="text">
-    <string>请选择要发送的文件！</string>
+    <string>选择文件</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -40,24 +48,36 @@
   <widget class="QPushButton" name="serverOpenBtn">
    <property name="geometry">
     <rect>
-     <x>70</x>
-     <y>160</y>
-     <width>75</width>
+     <x>20</x>
+     <y>140</y>
+     <width>271</width>
      <height>23</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);
+border:1px #000;
+border-radius:5px;</string>
+   </property>
    <property name="text">
-    <string>打开</string>
+    <string>打开文件</string>
    </property>
   </widget>
   <widget class="QPushButton" name="serverSendBtn">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>160</y>
-     <width>75</width>
+     <x>20</x>
+     <y>180</y>
+     <width>271</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(62, 139, 255);
+border:1px;
+border-radius:5px;
+color: rgb(255, 255, 255);
+</string>
    </property>
    <property name="text">
     <string>发送</string>
@@ -66,11 +86,14 @@
   <widget class="QProgressBar" name="progressBar">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>100</y>
-     <width>291</width>
+     <x>40</x>
+     <y>80</y>
+     <width>261</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
    </property>
    <property name="value">
     <number>0</number>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>269</width>
-    <height>200</height>
+    <width>212</width>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,16 @@
   <widget class="QPushButton" name="chatPushButton">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>150</y>
-     <width>75</width>
-     <height>23</height>
+     <x>10</x>
+     <y>180</y>
+     <width>191</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(70, 129, 255);
+color: rgb(255, 255, 255);
+border-radius:5px;</string>
    </property>
    <property name="text">
     <string>聊天</string>
@@ -32,54 +37,106 @@
   <widget class="QPushButton" name="removePushButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>150</y>
-     <width>75</width>
-     <height>23</height>
+     <x>10</x>
+     <y>220</y>
+     <width>191</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(159, 17, 6);
+color: rgb(255, 42, 5);
+color: rgb(255, 255, 255);
+border-radius:5px;</string>
    </property>
    <property name="text">
     <string>删除好友</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QLabel" name="usernameLabel">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>40</y>
-     <width>141</width>
-     <height>91</height>
+     <x>10</x>
+     <y>150</y>
+     <width>191</width>
+     <height>20</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item alignment="Qt::AlignHCenter">
-     <widget class="QLabel" name="usernameLabel">
-      <property name="maximumSize">
-       <size>
-        <width>36</width>
-        <height>26</height>
-       </size>
-      </property>
-      <property name="text">
-       <string>账户名</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignHCenter">
-     <widget class="QLabel" name="ipLabel">
-      <property name="text">
-       <string>ip地址</string>
-      </property>
-     </widget>
-    </item>
-    <item alignment="Qt::AlignHCenter|Qt::AlignVCenter">
-     <widget class="QLabel" name="localhostnameLabel">
-      <property name="text">
-       <string>主机名</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>用户名</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="graphicsView">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>10</y>
+     <width>41</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/1.jpg);
+border:0px;</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>191</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="localhostnameLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>191</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);
+font: 75 12pt &quot;幼圆&quot; bold;</string>
+   </property>
+   <property name="text">
+    <string>主机名</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ipLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>191</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(255, 255, 255);</string>
+   </property>
+   <property name="text">
+    <string>ip地址</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
  </widget>
  <resources/>

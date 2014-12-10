@@ -14,7 +14,7 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);
+   <string notr="true">background-color:rgb(236, 236, 236);
 
 </string>
   </property>
@@ -28,24 +28,8 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(238, 238, 238);</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="innerLogoLabel">
-   <property name="geometry">
-    <rect>
-     <x>13</x>
-     <y>12</y>
-     <width>61</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">font: 75 14pt &quot;幼圆&quot;;
-color: rgb(94, 94, 94);</string>
-   </property>
-   <property name="text">
-    <string>小区</string>
+    <string notr="true">background-color: rgb(238, 238, 238);
+border:0px;</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
@@ -54,11 +38,15 @@ color: rgb(94, 94, 94);</string>
      <x>0</x>
      <y>410</y>
      <width>441</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(255, 255, 255);</string>
+    <string notr="true">background-color: rgb(255, 255, 255);
+border-radius:10px;</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
   <widget class="QMenuButton" name="menuPushButton">
@@ -70,8 +58,26 @@ color: rgb(94, 94, 94);</string>
      <height>23</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(236, 236, 236);
+border-radius:2px;
+color: rgb(0,0,0);</string>
+   </property>
    <property name="text">
-    <string>/</string>
+    <string>&lt;</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>10</y>
+     <width>16</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
    </property>
   </widget>
   <widget class="QPushButton" name="closePushButton">
@@ -83,21 +89,25 @@ color: rgb(94, 94, 94);</string>
      <height>23</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(90, 175, 255);</string>
+   </property>
    <property name="text">
     <string>X</string>
    </property>
   </widget>
-  <widget class="Line" name="line_2">
+  <widget class="QGraphicsView" name="graphicsView">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>10</y>
-     <width>16</width>
-     <height>21</height>
+     <x>10</x>
+     <y>0</y>
+     <width>61</width>
+     <height>61</height>
     </rect>
    </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
+   <property name="styleSheet">
+    <string notr="true">background-image: url(:/images/2.jpg);
+border:0px;</string>
    </property>
   </widget>
  </widget>

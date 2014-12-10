@@ -13,7 +13,7 @@ InnerChat::InnerChat(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->closePushButton->setStyleSheet("QPushButton{background-color:rgb(177, 177, 177);\
+    ui->closePushButton->setStyleSheet("QPushButton{background-color:rgb(236, 236, 236);\
                                        border-radius:8px;\
                                        border:1px;}\
                                        QPushButton:hover{\
@@ -21,12 +21,6 @@ InnerChat::InnerChat(QWidget *parent) :
                                            color:rgb(255, 255, 255);\
                                        }");
 
-    ui->menuPushButton->setStyleSheet("QPushButton{background-color:rgb(229, 229, 229);\
-                                       border:1px;}\
-                                       QPushButton:hover{\
-                                           background-color:rgb(48, 133, 206);\
-                                           color:rgb(255, 255, 255);\
-                                       }");
 
     //设置鼠标跟踪为真
     setMouseTracking( true );
@@ -104,7 +98,7 @@ void InnerChat::processPendingDatagrams()
         QDataStream in(&datagram,QIODevice::ReadOnly);
         QString message;
         int messageType;
-        time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+        time = QDateTime::currentDateTime().toString("hh:mm:ss");
         in >> messageType;
 
         switch(messageType)
@@ -114,7 +108,7 @@ void InnerChat::processPendingDatagrams()
                     in >>this->userName>>this->localHostName>>this->ipAddress >>message;
                     ui->textBrowser->setTextColor(Qt::black);
                     ui->textBrowser->setCurrentFont(QFont("Times New Roman",12));
-                    ui->textBrowser->append("[ " +localHostName+" ] "+ time);
+                    ui->textBrowser->append(localHostName +" "+ time);
                     ui->textBrowser->append(message);
                     break;
                 }

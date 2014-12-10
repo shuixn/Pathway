@@ -218,7 +218,7 @@ void FriendChat::processPendingDatagrams()
         int FMessageType;
         in >> FMessageType;
         QString userName,localHostName,ipAddress,messagestr;
-        QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+        QString time = QDateTime::currentDateTime().toString("hh:mm:ss");
         switch(FMessageType)
         {
 
@@ -227,7 +227,7 @@ void FriendChat::processPendingDatagrams()
                     in >>userName >>localHostName >>ipAddress >>messagestr;
                     ui->textBrowser->setTextColor(Qt::black);
                     ui->textBrowser->setCurrentFont(QFont("Times New Roman",12));
-                    ui->textBrowser->append("[ " +localHostName+" ] "+ time);       //与主机名聊天中
+                    ui->textBrowser->append(localHostName+" "+ time);       //与主机名聊天中
                     ui->textBrowser->append(messagestr);
 
                     //收到好友消息后显示
@@ -421,11 +421,11 @@ void FriendChat::send()
     sendMessage(FMessage);
 
     QString localHostName = QHostInfo::localHostName();
-    QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+    QString time = QDateTime::currentDateTime().toString("hh:mm:ss");
 
     ui->textBrowser->setTextColor(Qt::black);
     ui->textBrowser->setCurrentFont(QFont("Times New Roman",12));
-    ui->textBrowser->append("[ " +localHostName+" ] "+ time);
+    ui->textBrowser->append(localHostName+" "+ time);
     ui->textBrowser->append(message);
 
 }

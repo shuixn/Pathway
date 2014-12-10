@@ -15,7 +15,7 @@ class TcpServer : public QDialog
     Q_OBJECT
 
 public:
-    explicit TcpServer(QWidget *parent = 0);
+    TcpServer(QWidget *parent = 0);
     ~TcpServer();
 
     void refused();

@@ -234,6 +234,9 @@ border:0px;</string>
        <height>20</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(214, 214, 214);</string>
+     </property>
      <property name="text">
       <string>&gt;</string>
      </property>

@@ -40,8 +40,6 @@ public:
 
     bool is_opened;
 
-public slots:
-
 
 protected:
 

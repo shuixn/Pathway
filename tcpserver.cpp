@@ -9,11 +9,10 @@ TcpServer::TcpServer(QWidget *parent):QDialog(parent),
 {
     ui->setupUi(this);
 
+    this->setWindowTitle("文件快传");
     tcpPort = 6666;
     tcpServer = new QTcpServer(this);
     connect(tcpServer,SIGNAL(newConnection()),this,SLOT(sendMessage()));
-
-    ui->serverSendBtn->setText(tr("发送"));
 
     initServer();
 
@@ -130,9 +129,9 @@ void TcpServer::on_serverSendBtn_clicked()
     if(!tcpServer->listen(QHostAddress::Any,tcpPort))
     {
         close();
+        return;
     }
-    ui->serverStatusLabel->setText(tr("等待对方接收... ..."));
-    ui->serverSendBtn->setText(tr("取消"));
+    ui->serverStatusLabel->setText(tr("正在确认对方接收... ..."));
 
     emit sendFileName(theFileName);
 }
@@ -145,8 +144,7 @@ void TcpServer::initServer()
     bytesWritten = 0;
     bytesToWrite = 0;
 
-    ui->serverStatusLabel->setText(tr("请选择要传送的文件"));
-    ui->serverSendBtn->setText(tr("发送"));
+    ui->serverStatusLabel->setText(tr("选择文件"));
     ui->progressBar->reset();
     ui->serverOpenBtn->setEnabled(true);
     ui->serverSendBtn->setEnabled(false);

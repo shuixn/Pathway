@@ -9,6 +9,8 @@ TcpClient::TcpClient(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->setWindowTitle("文件快传");
+
     TotalBytes = 0;
     bytesReceived = 0;
     fileNameSize = 0;
